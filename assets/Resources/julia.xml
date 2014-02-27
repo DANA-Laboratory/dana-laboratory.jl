@@ -1,0 +1,36 @@
+<NotepadPlus>
+    <UserLang name="Julia" ext="jl">
+        <Settings>
+            <Global caseIgnored="no" escapeChar="\" />
+            <TreatAsSymbol comment="no" commentLine="yes" />
+            <Prefix words1="no" words2="no" words3="no" words4="no" />
+        </Settings>
+        <KeywordLists>
+            <Keywords name="Delimiters">&quot;&apos;0&quot;&apos;0</Keywords>
+            <Keywords name="Folder+">begin function type for while if</Keywords>
+            <Keywords name="Folder-">end</Keywords>
+            <Keywords name="Operators">&apos; - ! &quot; $ % &amp; * , . / : ; ? @ \ ^ _ ` | ~ + &lt; = &gt;</Keywords>
+            <Keywords name="Comment">1 2 0#</Keywords>
+            <Keywords name="Words1">abstract and begin break try catch const continue do else elseif end false for function global if in let local macro module new next not or quote rescue return then true try type immutable unless import export typealias using while</Keywords>
+            <Keywords name="Words2">Bool Int Integer String Float64 Float32 Char</Keywords>
+            <Keywords name="Words3"></Keywords>
+            <Keywords name="Words4"></Keywords>
+        </KeywordLists>
+        <Styles>
+            <WordsStyle name="DEFAULT" styleID="11" fgColor="000000" bgColor="FFFFFF" fontName="Lucida Console" fontStyle="0" fontSize="9" />
+            <WordsStyle name="FOLDEROPEN" styleID="12" fgColor="008000" bgColor="FFFFFF" fontName="" fontStyle="0" />
+            <WordsStyle name="FOLDERCLOSE" styleID="13" fgColor="008000" bgColor="FFFFFF" fontName="" fontStyle="0" />
+            <WordsStyle name="KEYWORD1" styleID="5" fgColor="0080C0" bgColor="FFFFFF" fontName="Lucida Console" fontStyle="0" fontSize="9" />
+            <WordsStyle name="KEYWORD2" styleID="6" fgColor="800080" bgColor="FFFFFF" fontName="" fontStyle="0" />
+            <WordsStyle name="KEYWORD3" styleID="7" fgColor="FF00FF" bgColor="FFFFFF" fontName="" fontStyle="0" />
+            <WordsStyle name="KEYWORD4" styleID="8" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
+            <WordsStyle name="COMMENT" styleID="1" fgColor="ADADAD" bgColor="FFFFFF" fontName="" fontStyle="0" />
+            <WordsStyle name="COMMENT LINE" styleID="2" fgColor="C0C0C0" bgColor="FFFFFF" fontName="Lucida Console" fontStyle="0" fontSize="9" />
+            <WordsStyle name="NUMBER" styleID="4" fgColor="000080" bgColor="FFFFFF" fontName="" fontStyle="0" />
+            <WordsStyle name="OPERATOR" styleID="10" fgColor="0080C0" bgColor="FFFFFF" fontName="Lucida Console" fontStyle="0" fontSize="9" />
+            <WordsStyle name="DELIMINER1" styleID="14" fgColor="808040" bgColor="FFFFFF" fontName="Lucida Console" fontStyle="0" />
+            <WordsStyle name="DELIMINER2" styleID="15" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
+            <WordsStyle name="DELIMINER3" styleID="16" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
+        </Styles>
+    </UserLang>
+</NotepadPlus>

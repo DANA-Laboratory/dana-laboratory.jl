@@ -1,0 +1,20 @@
+#document settings
+title: DANA Laboratory
+desc: "DANA Laboratory is an educational, equation based and open source project for process simulation"
+url: http://DANA-Laboratory.github.io
+repo_name: DANA-Laboratory.github.io
+branch: master
+
+#global settings, no need to change these
+root_url: http://DANA-Laboratory.github.io
+org_name: DANA-Laboratory
+prose_url: http://prose.io
+
+# default build settings for running locally, no need to edit
+pymgemnts: true
+exclude: ["script", "vendor", "Gemfile", "Gemfile.lock", "config.ru", "Procfile", "Rakefile", "readme.md"]
+#need for highlighting
+markdown: redcarpet
+redcarpet:
+  extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "tables", "with_toc_data"]
+relative_permalinks: false
