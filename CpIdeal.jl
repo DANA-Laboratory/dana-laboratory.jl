@@ -2,7 +2,7 @@
 published: true
 permalink: /CpIdeal.html
 layout: highlight_julia
-filename: CpIdeal.md
+filename: CpIdeal.jl
 ---
 
 module CpIdeal
