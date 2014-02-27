@@ -3,7 +3,7 @@ published: true
 permalink: /test.html
 layout: highlight_julia
 filename: test.md
-sourcefilename: /CpIdeal.jl/src/CpIdeal.jl
+sourcefilename: CpIdeal.jl/src/CpIdeal.jl
 desc: 
 ---
 
