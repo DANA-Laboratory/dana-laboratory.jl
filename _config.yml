@@ -2,7 +2,7 @@
 title: DANA Laboratory
 desc: "DANA Laboratory is an educational, equation based and open source project for process simulation"
 url: http://DANA-Laboratory.github.io/DANA-Laboratory.jl
-repo_name: DANA-Laboratory/DANA-Laboratory.jl
+repo_name: DANA-Laboratory.jl
 branch: ph-pages
 
 #global settings, no need to change these
