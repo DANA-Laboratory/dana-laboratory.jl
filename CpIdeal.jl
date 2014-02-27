@@ -1,3 +1,10 @@
+---
+published: true
+permalink: /CpIdeal.html
+layout: highlight_julia
+filename: CpIdeal.md
+---
+
 module CpIdeal
   export C0Poly,C0Hyper
   cp_polynomial=open("./share/julia/site/v0.2/CpIdeal.jl/src/Tables/perryHeatCapIdealGas(Table2-155).table");
