@@ -26,4 +26,3 @@ function testIDealGasForNonlinearSolver()
   #a=replace(DNIdel)
   #println(a)
 end
-
