@@ -1,11 +1,11 @@
 {% include minimalHeader.html %}            
 
 <div class="container-fluid">
-<h3> {{ sourcefilename }} </h3>
+<h3> {{ page.sourcefilename }} </h3>
   <div class="row-fluid">
     <div class="span12">
       {{ content }}
-      {% include sourcefilename %}
+      {% include page.sourcefilename %}
     </div>
   </div>
 </div>
