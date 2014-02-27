@@ -2,7 +2,7 @@
 published: true
 permalink: /test.html
 layout: highlight_julia
-filename: test.md
+filename: test.jl
 desc: 
 ---
 
