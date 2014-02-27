@@ -1,12 +1,12 @@
 #document settings
 title: DANA Laboratory
 desc: "DANA Laboratory is an educational, equation based and open source project for process simulation"
-url: http://DANA-Laboratory.github.io
-repo_name: DANA-Laboratory.github.io
-branch: master
+url: http://DANA-Laboratory.github.io/DANA-Laboratory.jl
+repo_name: DANA-Laboratory.jl
+branch: ph-pages
 
 #global settings, no need to change these
-root_url: http://DANA-Laboratory.github.io
+root_url: http://DANA-Laboratory.github.io/DANA-Laboratory.jl
 org_name: DANA-Laboratory
 prose_url: http://prose.io
 
