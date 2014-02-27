@@ -30,7 +30,7 @@
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
   <![endif]-->
   {% capture edit_url %}{{ site.prose_url }}#{{ site.org_name }}/{{ site.repo_name }}/edit/{{ site.branch }}/{{ page.filename }}{% endcapture %}
-  {% capture source_julia_url %}{{ site.prose_url }}#{{ site.org_name }}/{{ site.repo_name }}/edit/master/{{ page.filename }}{% endcapture %}
+  {% capture source_julia_url %}http://www.github.com/{{ site.repo_name }}/master/{{ page.sourcefilename }}{% endcapture %}
 
 </head>
 <body>
