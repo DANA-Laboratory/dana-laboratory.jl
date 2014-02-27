@@ -4,8 +4,7 @@
 <h3> {{ page.sourcefilename }} </h3>
   <div class="row-fluid">
     <div class="span12">
-      {{ content }}
-      {% highlight julia %}{% include CpIdeal.jl %}{% endhighlight %}
+      {% highlight julia %}{% include page.sourcefilename %}{% endhighlight %}
     </div>
   </div>
 </div>
