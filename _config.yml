@@ -9,6 +9,7 @@ branch: ph-pages
 root_url: http://DANA-Laboratory.github.io/DANA-Laboratory.jl
 org_name: DANA-Laboratory
 prose_url: http://prose.io
+baseurl: /DANA-Laboratory.jl
 
 # default build settings for running locally, no need to edit
 pymgemnts: true
@@ -18,5 +19,3 @@ markdown: redcarpet
 redcarpet:
   extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "tables", "with_toc_data"]
 relative_permalinks: false
-
-baseurl: /DANA-Laboratory.jl
