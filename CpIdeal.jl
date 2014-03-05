@@ -1,6 +1,6 @@
 ---
 published: true
-permalink: /CpIdeal.html
+permalink: /
 layout: highlight_julia
 filename: CpIdeal.jl
 ---
