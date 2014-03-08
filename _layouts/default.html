@@ -1,13 +1,6 @@
-{% include minimalHeader.html %}            
-
-<div class="container-fluid">
-  <div class="row-fluid">
-    <div class="span12">
-      {% highlight julia %}
-      {{ include test.jl }}
-      {% endhighlight %}
-    </div>
-  </div>
-</div>
-
-{% include footer.html %}  
+---
+theme :
+  name : twitter
+---
+{% include JB/setup %}
+{% include themes/twitter/default.html %}
