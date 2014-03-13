@@ -4,7 +4,7 @@
 {% if page.categories == code_comment %}
 {% capture source_url %}/{{page.category}}/{{page.module}}/{{page.filename}}.jl{% endcapture %}
 {% capture comment_url %}/{{page.category}}/{{page.module}}/{{page.filename}}.txt{% endcapture %}
-{{comment_url}}
+{% include comment_url %}
 {% endif %}
 <div class="row-fluid post-full">
   <div class="span12">
