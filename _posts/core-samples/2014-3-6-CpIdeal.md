@@ -1,14 +1,19 @@
 ---
 layout: post
-category : lessons
-tagline: "Supporting tagline"
-tags : [intro, beginner, jekyll, tutorial]
-filename: CpIdeal.jl
+category : code_comment
+module: idealGas.jl
+tagline: "thermodynamics calculation with julia"
+tags : [julia, thermodynamics, sample]
+filename:  CpIdeal
 ---
 {% include JB/setup %}
-<p dir="rtl" align="right">
-{% include materials/CpIdeal.txt %}
+
+{% capture source_url %}{{page.module}}/{{page.filename}}.jl{% endcapture %}
+{% capture comment_url %}{{page.module}}/{{page.filename}}.txt{% endcapture %}
+
+<p align="right">
+{% include {{comment_url}} %}
 </p> 
 {% highlight julia %}
-{% include materials/CpIdeal.jl %}
+{% include {{source_url}} %}
 {% endhighlight %}
