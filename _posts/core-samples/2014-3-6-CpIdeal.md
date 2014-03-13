@@ -8,8 +8,8 @@ filename:  CpIdeal
 ---
 {% include JB/setup %}
 
-{% capture source_url %}{{page.module}}/{{page.filename}}.jl{% endcapture %}
-{% capture comment_url %}{{page.module}}/{{page.filename}}.txt{% endcapture %}
+{% capture source_url %}/{{page.category}}/{{page.module}}/{{page.filename}}.jl{% endcapture %}
+{% capture comment_url %}/{{page.category}}/{{page.module}}/{{page.filename}}.txt{% endcapture %}
 
 <p align="right">
 {% include {{comment_url}} %}
