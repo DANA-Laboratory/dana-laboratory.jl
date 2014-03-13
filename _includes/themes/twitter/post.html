@@ -2,9 +2,10 @@
   <h1>{{ page.title }} {% if page.tagline %}<small>{{page.tagline}}</small>{% endif %}</h1>
 </div>
 {% if page.category == 'code_comment' %}
-{{page.category}}
-{% capture source_url %}/{{page.category}}/{{page.module}}/{{page.filename}}.jl{% endcapture %}
-{% capture comment_url %}/{{page.category}}/{{page.module}}/{{page.filename}}.txt{% endcapture %}
+  {{page.category}}
+  {% capture source_url %}/{{page.category}}/{{page.module}}/{{page.filename}}.jl{% endcapture %}
+  {% capture comment_url %}/{{page.category}}/{{page.module}}/{{page.filename}}.txt{% endcapture %}
+  {{comment_url}}
 {% endif %}
 <div class="row-fluid post-full">
   <div class="span12">
