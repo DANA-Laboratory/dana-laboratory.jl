@@ -1,8 +1,8 @@
 ---
 layout: post
 category : code_comment
-module: idealGasEos.jl
+module: IdealGasEos.jl
 tagline: "Thermodynamics calculation with julia"
 tags : [julia, thermodynamics, sample]
-filename:  idealGasEos
+filename:  IdealGasEos
 ---
