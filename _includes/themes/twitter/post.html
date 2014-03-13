@@ -1,8 +1,8 @@
 <div class="page-header">
   <h1>{{ page.title }} {% if page.tagline %}<small>{{page.tagline}}</small>{% endif %}</h1>
 </div>
+{% if page.category == 'code_comment' %}
 {{page.category}}
-{% if page.category == code_comment %}
 {% capture source_url %}/{{page.category}}/{{page.module}}/{{page.filename}}.jl{% endcapture %}
 {% capture comment_url %}/{{page.category}}/{{page.module}}/{{page.filename}}.txt{% endcapture %}
 {% include comment_url %}
