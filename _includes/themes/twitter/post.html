@@ -7,7 +7,7 @@
       <span>{{ page.date | date_to_long_string }}</span>
     </div>
     <div class="content">  
-  {% if page.category == 'code_comment' %}
+  {% if page.category == 'code-comment' %}
     {% capture source_url %}/{{page.category}}/{{page.module}}/{{page.filename}}.jl{% endcapture %}
     {% capture comment_url %}/{{page.category}}/{{page.module}}/{{page.filename}}.txt{% endcapture %}
     <p align="right">
