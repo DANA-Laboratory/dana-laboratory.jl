@@ -4,8 +4,13 @@
 {% if page.category == 'code_comment' %}
   {% capture source_url %}/{{page.category}}/{{page.module}}/{{page.filename}}.jl{% endcapture %}
   {% capture comment_url %}/{{page.category}}/{{page.module}}/{{page.filename}}.txt{% endcapture %}
-  {% include {{comment_url}} %}
-{% endif %}
+  <p align="right">
+    {% include {{comment_url}} %}
+  </p> 
+  {% highlight julia %}
+  {% include {{source_url}} %}
+  {% endhighlight %}
+  {% endif %}
 <div class="row-fluid post-full">
   <div class="span12">
     <div class="date">
