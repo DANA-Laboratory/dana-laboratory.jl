@@ -2,7 +2,7 @@
 layout: post
 category : code_comment
 module: idealGas.jl
-tagline: "thermodynamics calculation with julia"
+tagline: "Thermodynamics calculation with julia"
 tags : [julia, thermodynamics, sample]
 filename:  CpIdeal
 ---
