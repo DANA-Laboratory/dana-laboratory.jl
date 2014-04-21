@@ -142,7 +142,7 @@ push!(a,4)     # => [1,2,4]
 push!(a,3)     # => [1,2,4,3]
 append!(a,b) # => [1,2,4,3,4,5,6]
 
-# Remove from the end with pop
+# Remove from the end with pop!
 pop!(b)        # => 6 and b is now [4,5]
 
 # Let's put it back
