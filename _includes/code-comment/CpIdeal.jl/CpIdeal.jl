@@ -1,4 +1,5 @@
 module CpIdeal
+#توابع صادره از ماژول امکان استخراج ضرایب مناسب برای دو روش محاسبه ظرفیت گرمایی با استفاده از تقریب چند جمله ای یا هایپربولیک را فراهم می آورند
   export C0Poly,C0Hyper
   cp_polynomial=open("./share/julia/site/v0.2/CpIdeal.jl/src/Tables/perryHeatCapIdealGas(Table2-155).table");
   cp_hyperbolic=open("./share/julia/site/v0.2/CpIdeal.jl/src/Tables/perryHeatCapIdealGas(Table2-156).table");
