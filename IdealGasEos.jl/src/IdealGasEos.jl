@@ -4,7 +4,7 @@ module IdealGasEos
   export DANAIdealGasEos,setEquationFlow
   type  DANAIdealGasEos <: DanaModel
       DANAIdealGasEos()=begin
-        new(NaN,8314.4621,NaN,NaN,"",NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,true,
+        new(8314.4621,"",true,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,
           [
             :(P*v=R*T),
             :(Cp=C1+C2*T+C3*T^2+C4*T^3+C5*T^4),#Poly Cp
@@ -20,24 +20,27 @@ module IdealGasEos
           ],Array(Expr,0)
         )
       end
-      v::Float64
+      #paremeters
       R::Float64
-      T::Float64
-      P::Float64
       CASNO::String
-      Cp::Float64
+      usePolynomialEstimationOfCp::Bool
       C1::Float64
       C2::Float64
       C3::Float64
       C4::Float64
       C5::Float64
-      ICpOnTDT::Float64
+      #variables
+      v::Float64
+      T::Float64
+      P::Float64
+      Cp::Float64
       Cv::Float64
-      ICpDT::Float64
       u::Float64
       h::Float64
       s::Float64
-      usePolynomialEstimationOfCp::Bool
+      ICpOnTDT::Float64
+      ICpDT::Float64
+      #equations
       equations::Array{Expr,1}
       equationsFlow::Array{Expr,1}
   end
