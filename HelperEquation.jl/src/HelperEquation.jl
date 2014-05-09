@@ -9,21 +9,23 @@ module HelperEquation
   
   using DanaTypes
   using Calculus
-  
-	function getEq(_argsArray,_eq::Function)
+  #replace known arguments in _eq::Function argument list and returns another function with only unknowns 
+	#for unknown arguments pass NaN in _argsArray
+	#getEq([1.1,2.3,NaN,-3.1,NaN],fun) -> _fun(arg1,arg2)=fun(1.1,2.3,arg1,-3.1,arg2)
+	function getEq(_argsArray::Vector,_eq::Function)
 		ex=:((argsArray)->$_eq())
-		exx=ex.args[2].args[2].args
+		exx=[_eq]
 		len=length(_argsArray)
-    j=1
+		j=1
 		for i in 1:len
 			if isnan(_argsArray[i])
-        exx=vcat(exx,:(argsArray[$j]))
-        j+=1
-      else
-        exx=vcat(exx,_argsArray[i])
-      end
+				exx=vcat(exx,:(argsArray[$j]))
+				j+=1
+			else
+				exx=vcat(exx,_argsArray[i])
+			end
 		end
-    ex.args[2].args[2].args=exx
+		ex.args[2].args[2].args=exx
 		return eval(ex)
 	end
 
