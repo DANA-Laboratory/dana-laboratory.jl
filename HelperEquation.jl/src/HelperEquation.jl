@@ -70,6 +70,8 @@ module HelperEquation
 
   function analysis(exps::Array{Expr,1})
     syms::Array{String,1}=Array(String,0)
+    nolinearFunctions::Array{Function,1}=Array(Function,0)
+    nolinearArgs::Array{Array{String,1},1}=Array(Array{String,1},0)
     #by default expr must have a constant symbol
     push!(syms,"constant")
     i=1
@@ -87,13 +89,13 @@ module HelperEquation
         for s in symsLoc
           push!(nonlinearExpr.args[1].args,symbol(s))
         end
-        f=eval(nonlinearExpr)
-        println(nonlinearExpr.args[1].args,string(exp))
+        push!(nolinearFunctions, eval(nonlinearExpr))
+				push!(nolinearArgs, symsLoc)
       end
     end
     vals::Array{Float64,2}=zeros(i-1,length(syms))
     for j=1:i-1 ; vals[j,1:length(facs[j])]=facs[j]; end
-    return  circshift(vals,(0,-1)),circshift(syms,-1)
+    return  circshift(vals,(0,-1)) , circshift(syms,-1) , nolinearFunctions , nolinearArgs
   end
   
   analysis!(num::Number,syms::Array{String,1},symsLoc::Array{String,1})=[num]
