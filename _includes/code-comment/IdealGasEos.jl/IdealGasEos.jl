@@ -54,7 +54,7 @@ module IdealGasEos
       equations::Array{Expr,1} #آرایه ای برای نگه داری کلیه معادلات لازم
       equationsFlow::Array{Expr,1} #آرایه ای از معادلات حاکم
   end
-  #با توجه به شرایط مدل 8 معادله مستقل از 11 ملادله برگزیده میشود
+  #با توجه به شرایط مدل 8 معادله مستقل از 11 معادله برگزیده میشود
   function setEquationFlow(this::DANAIdealGasEos)
     if this.usePolynomialEstimationOfCp
       this.equationsFlow=[this.equations[1],this.equations[2],this.equations[4],this.equations[6],this.equations[7],this.equations[9],this.equations[10],this.equations[11]]
