@@ -1,6 +1,6 @@
 module HelperEquation
 
-  export replace,getfield
+  export replace,getfield,setfield
 
   export analysis
   export replace!
@@ -32,7 +32,7 @@ module HelperEquation
   getfield(danamodel::DanaModel,sy::Symbol)=Core.getfield(danamodel,sy)
   getfield(danamodel::DanaModel,ex::Expr)=getfield(getfield(danamodel,ex.args[1]),ex.args[2].value)
 
-  setfield(danamodel::DanaModel,sy::Symbol,value)=Core.setfield(danamodel,sy,value)
+  setfield(danamodel::DanaModel,sy::Symbol,value)=Base.setfield!(danamodel,sy,value)
   setfield(danamodel::DanaModel,ex::Expr,value)=setfield(getfield(danamodel,ex.args[1]),ex.args[2].value,value)
   setfield(danamodel::DanaModel,st::String,value)=setfield(danamodel,symbol(st),value)
   
@@ -179,10 +179,10 @@ module HelperEquation
       end
     end
     #equations=vals*vars (linear equations)
-    vals,vars=analysis(sequations)
+    vals,vars,nolinearFunctions,nolinearArgs=analysis(sequations)
     #reduced row echelon form
     rreModel=rref(vals)
-    return rreModel,vars
+    return rreModel,vars,nolinearFunctions,nolinearArgs
   end
 
   function update!(danamodel::DanaModel,rre::Array{Float64,2},vars::Array{String,1})

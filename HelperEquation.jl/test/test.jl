@@ -5,6 +5,7 @@ module test
   using IdealGasEos
   using CpIdeal
   using Calculus
+  using Roots
   function testforIdealGasModelWithCp()
     DNIdel=DANAIdealGasEos()
     DNIdel.P=12.0
@@ -75,7 +76,41 @@ module test
       somthingUpdated,fullDetermined=update!(DNIdel,rVls,vars)
     end
     dump(DNIdel)
-    #a=replace(DNIdel)
-    #println(a)
+  end
+  function testIDealGasForNonlinearSolver2()
+    ######Temprature is undef###using nolinear solver for only an equation####
+    DNIdel=DANAIdealGasEos()
+    DNIdel.P=2000.0
+    DNIdel.Cp=629657.0
+    DNIdel.CASNO="95-63-6"
+    DNIdel.usePolynomialEstimationOfCp=true
+    DNIdel.C1,DNIdel.C2,DNIdel.C3,DNIdel.C4,DNIdel.C5 = C0Poly("95-63-6")
+    setEquationFlow(DNIdel)
+    somthingUpdated=true
+    fullDetermined=false
+    nonliFuns::Array{Function,1}=Array(Function,0)
+    nonliVars::Array{Array{String,1},1}=Array(Array{String,1},0)
+    while (somthingUpdated && !fullDetermined)
+      while (somthingUpdated && !fullDetermined)
+        rVls,vars,nonliFuns,nonliVars=solve(DNIdel)
+        println("************one linear solution done************")
+        somthingUpdated,fullDetermined=update!(DNIdel,rVls,vars)
+      end
+      if !fullDetermined
+        i=1
+        fullDetermined=true
+        while (i<=length(nonliFuns))
+          if length(nonliVars[i])==1
+            setfield(DNIdel,nonliVars[i][1],fzero(nonliFuns[i],[0,typemax(Int64)]))
+            println("************one nonlinear solution done************")
+            somthingUpdated=true
+          else
+            fullDetermined=false
+          end 
+          i=i+1
+        end
+      end
+    end
+    dump(DNIdel)
   end
 end

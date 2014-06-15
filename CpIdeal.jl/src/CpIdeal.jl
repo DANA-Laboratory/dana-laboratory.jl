@@ -1,7 +1,7 @@
 module CpIdeal
   export C0Poly,C0Hyper
-  cp_polynomial=open("./share/julia/site/v0.2/CpIdeal.jl/src/Tables/perryHeatCapIdealGas(Table2-155).table");
-  cp_hyperbolic=open("./share/julia/site/v0.2/CpIdeal.jl/src/Tables/perryHeatCapIdealGas(Table2-156).table");
+  cp_polynomial=open("../share/julia/site/v0.3/CpIdeal.jl/src/Tables/perryHeatCapIdealGas(Table2-155).table");
+  cp_hyperbolic=open("../share/julia/site/v0.3/CpIdeal.jl/src/Tables/perryHeatCapIdealGas(Table2-156).table");
   data_poly,header_poly=readdlm(cp_polynomial,';',has_header=true);
   data_hyper,header_hyper=readdlm(cp_hyperbolic,';',has_header=true);
   close(cp_polynomial)

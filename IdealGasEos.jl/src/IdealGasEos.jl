@@ -1,3 +1,4 @@
+# REF[1] Engineering and Chemical Thermodynamics, 2nd Edition, Milo D. Koretsky
 module IdealGasEos
   #Units J,Kmol,Kelvin
   using DanaTypes
@@ -14,9 +15,9 @@ module IdealGasEos
             :(Cv=Cp-R),#Cv Def
             :(ICpDT=C1*T+1/60*T^2*(30*C2+T*(20*C3+3*T*(5*C4+4*C5*T)))),#Integ of Cp Poly
             :(ICpDT=C1*T+C2*C3*coth(C3/T)-C4*C5*tanh(C5/T)),#Integ of Cp Hyper
-            :(u=ICpDT-R*T), #Internal energy dep
-            :(h=ICpDT), #Enthalpy def
-            :(s=ICpOnTDT-R*log(P)) #Entropy
+            :(u=ICpDT-R*T), #Internal energy 
+            :(h=ICpDT), #Enthalpy 
+            :(s=ICpOnTDT-R*log(P)) #Entropy ,REF[1] eq(3.22)
           ],Array(Expr,0)
         )
       end
