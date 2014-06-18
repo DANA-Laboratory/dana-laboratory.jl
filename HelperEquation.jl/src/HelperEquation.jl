@@ -1,6 +1,6 @@
 module HelperEquation
 
-  export replace,getfield,setfield
+  export replace
 
   export analysis
   export replace!
@@ -9,6 +9,7 @@ module HelperEquation
   
   using DanaTypes
   using Calculus
+  using Roots
   #replace known arguments in _eq::Function argument list and returns another function with only unknowns 
 	#for unknown arguments pass NaN in _argsArray
 	#getEq([1.1,2.3,NaN,-3.1,NaN],fun) -> _fun(arg1,arg2)=fun(1.1,2.3,arg1,-3.1,arg2)

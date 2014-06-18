@@ -4,7 +4,6 @@ module test
   using HelperEquation
   using IdealGasEos
   using CpIdeal
-  using Calculus
   using Roots
   function testforIdealGasModelWithCp()
     DNIdel=DANAIdealGasEos()
@@ -16,7 +15,7 @@ module test
     setEquationFlow(DNIdel)
     a=replace(DNIdel)
     println(a[5])
-    a=map(simplify,a)
+    a=map(Calculus.simplify,a)
     vals,vars=analysis(a)
     println(a)
     println(vals)
@@ -101,7 +100,7 @@ module test
         fullDetermined=true
         while (i<=length(nonliFuns))
           if length(nonliVars[i])==1
-            setfield(DNIdel,nonliVars[i][1],fzero(nonliFuns[i],[0,typemax(Int64)]))
+            HelperEquation.setfield(DNIdel,nonliVars[i][1],Roots.fzero(nonliFuns[i],[0,typemax(Int64)]))
             println("************one nonlinear solution done************")
             somthingUpdated=true
           else

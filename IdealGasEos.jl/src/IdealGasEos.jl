@@ -1,23 +1,23 @@
 # REF[1] Engineering and Chemical Thermodynamics, 2nd Edition, Milo D. Koretsky
 module IdealGasEos
-  #Units J,Kmol,Kelvin
+  #Units J,Kmol,Kelvin,pascal
   using DanaTypes
   export DANAIdealGasEos,setEquationFlow
   type  DANAIdealGasEos <: DanaModel
       DANAIdealGasEos()=begin
         new(8314.4621,"",true,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,
           [
-            :(P*v=R*T),
-            :(Cp=C1+C2*T+C3*T^2+C4*T^3+C5*T^4),#Poly Cp
-            :(Cp=C1+C2*((C3/T)/sinh(C3/T))^2+C4*((C5/T)/cosh(C5/T))^2),#Hyper Cp
+            :(P*v=R*T),#pascal
+            :(Cp=C1+C2*T+C3*T^2+C4*T^3+C5*T^4),#Poly Cp in J/[Kmol*K]
+            :(Cp=C1+C2*((C3/T)/sinh(C3/T))^2+C4*((C5/T)/cosh(C5/T))^2),#Hyper Cp in J/[Kmol*K]
             :(ICpOnTDT=C2*T+(C3*T^2)/2+(C4*T^3)/3+(C5*T^4)/4+C1*log(T)),#Integral of Cp/T Poly
             :(ICpOnTDT=(C2*C3*coth(C3/T)+C1*T*log(T)+C4*T*log(cosh(C5/T))-C2*T*log(Sinh(C3/T))-C4*C5*tanh(C5/T))/T),#Integral of Cp/T Hyper
             :(Cv=Cp-R),#Cv Def
             :(ICpDT=C1*T+1/60*T^2*(30*C2+T*(20*C3+3*T*(5*C4+4*C5*T)))),#Integ of Cp Poly
             :(ICpDT=C1*T+C2*C3*coth(C3/T)-C4*C5*tanh(C5/T)),#Integ of Cp Hyper
-            :(u=ICpDT-R*T), #Internal energy 
-            :(h=ICpDT), #Enthalpy 
-            :(s=ICpOnTDT-R*log(P)) #Entropy ,REF[1] eq(3.22)
+            :(u=ICpDT-R*T), #Internal energy in J/Kmol
+            :(h=ICpDT), #Enthalpy in J/kmol
+            :(s=ICpOnTDT-R*log(P)) #Entropy in J/[Kmol*K] ,REF[1] eq(3.22)
           ],Array(Expr,0)
         )
       end
