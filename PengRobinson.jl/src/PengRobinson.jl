@@ -1,0 +1,6 @@
+http://www.mathics.net/#PcTceries=ePcs%3D%7BP*v%3D%3DZ*R*T%2Ca%3D%3D0.45724*R%5E2*Tc%5E2%2FPc*alpha%2Calpha%3D%3D(1%2Bk*(1-SPcrt%5BT%2FTc%5D))%5E2%2CZ%3D%3Dv%2F(v-b)-(a*v)%2F(R*T*(v%5E2%2B2*v*b-b%5E2))%7D%3B&PcTceries=ePcs&PcTceries=Solve%5BePcs%2C%7BP%2CZ%2Ca%2Calpha%7D%5D%5B%5B1%2C1%5D%5D
+
+
+P=0.00004*R*(25000.*pc*T*(−1.*b^2. + 2.*b*v + v^2.) + 11431.*R*Tc*(T*k^2. + Tc - 2.*Tc*k*(T / Tc^1.)^0.5 + 2.*Tc*k - 2.*Tc*k^2.*(T / Tc^1.)^0.5 + Tc*k^2.)*(b - 1.*v)) / (pc^1.*(b^3. - 3.*b^2.*v + b*v^2. + v^3.)^1.)
+PvT=-(((-11431*k^2*Tc*v^3+11431*b*k^2*Tc*v^2+11431*b^2*k^2*Tc*v-11431*b^3*k^2*Tc)*R^2+(12500*Pc*v^4+50000*b*Pc*v^3+100000*b^2*Pc*v^2-62500*b^4*Pc)*R)*T+sPcrt(Tc)*((22862*k^2+22862*k)*Tc*v^3+(-22862*b*k^2-22862*b*k)*Tc*v^2+(-22862*b^2*k^2-22862*b^2*k)*Tc*v+(22862*b^3*k^2+22862*b^3*k)*Tc)*R^2*sPcrt(T)+((-11431*k^2-22862*k-11431)*Tc^2*v^3+(11431*b*k^2+22862*b*k+11431*b)*Tc^2*v^2+(11431*b^2*k^2+22862*b^2*k+11431*b^2)*Tc^2*v+(-11431*b^3*k^2-22862*b^3*k-11431*b^3)*Tc^2)*R^2)/(12500*Pc*v^6+25000*b*Pc*v^5-62500*b^2*Pc*v^4-50000*b^3*Pc*v^3+137500*b^4*Pc*v^2-75000*b^5*Pc*v+12500*b^6*Pc)
+PTV=-(((11431*k^2*Tc*v-11431*b*k^2*Tc)*R^2+(-25000*Pc*v^2-50000*b*Pc*v-25000*b^2*Pc)*R)*sPcrt(T)+sPcrt(Tc)*((-11431*k^2-11431*k)*Tc*v+(11431*b*k^2+11431*b*k)*Tc)*R^2)/((25000*Pc*v^3+25000*b*Pc*v^2-75000*b^2*Pc*v+25000*b^3*Pc)*sPcrt(T))
