@@ -39,6 +39,7 @@ module HelperEquation
   
   replace(danamodel::DanaModel,num::Float64)=num
   replace(danamodel::DanaModel,num::Int32)=num
+  replace(danamodel::DanaModel,num::Int64)=num
 
   function replace(danamodel::DanaModel)
     new_equations::Array{Expr,1}=Array(Expr,0)

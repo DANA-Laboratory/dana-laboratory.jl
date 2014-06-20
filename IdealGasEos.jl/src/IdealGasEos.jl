@@ -11,7 +11,7 @@ module IdealGasEos
             :(Cp=C1+C2*T+C3*T^2+C4*T^3+C5*T^4),#Poly Cp in J/[Kmol*K]
             :(Cp=C1+C2*((C3/T)/sinh(C3/T))^2+C4*((C5/T)/cosh(C5/T))^2),#Hyper Cp in J/[Kmol*K]
             :(ICpOnTDT=C2*T+(C3*T^2)/2+(C4*T^3)/3+(C5*T^4)/4+C1*log(T)),#Integral of Cp/T Poly
-            :(ICpOnTDT=(C2*C3*coth(C3/T)+C1*T*log(T)+C4*T*log(cosh(C5/T))-C2*T*log(Sinh(C3/T))-C4*C5*tanh(C5/T))/T),#Integral of Cp/T Hyper
+            :(ICpOnTDT=(C2*C3*coth(C3/T)+C1*T*log(T)+C4*T*log(cosh(C5/T))-C2*T*log(sinh(C3/T))-C4*C5*tanh(C5/T))/T),#Integral of Cp/T Hyper
             :(Cv=Cp-R),#Cv Def
             :(ICpDT=C1*T+1/60*T^2*(30*C2+T*(20*C3+3*T*(5*C4+4*C5*T)))),#Integ of Cp Poly
             :(ICpDT=C1*T+C2*C3*coth(C3/T)-C4*C5*tanh(C5/T)),#Integ of Cp Hyper
