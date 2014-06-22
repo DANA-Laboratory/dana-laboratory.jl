@@ -3,9 +3,9 @@ module Tables
   cp_polynomial=open(homedir()*"/.julia/v0.3/Tables.jl/src/Tables/perryHeatCapIdealGas(Table2-155).table");
   cp_hyperbolic=open(homedir()*"/.julia/v0.3/Tables.jl/src/Tables/perryHeatCapIdealGas(Table2-156).table");
   criticals_af=open(homedir()*"/.julia/v0.3/Tables.jl/src/Tables/perryCriticals(Table2-141).table");
-  data_poly,header_poly=readdlm(cp_polynomial,';',has_header=true);
-  data_hyper,header_hyper=readdlm(cp_hyperbolic,';',has_header=true);
-  data_criti,header_criti=readdlm(criticals_af,';',has_header=true);
+  data_poly,header_poly=readdlm(cp_polynomial,';',header=true);
+  data_hyper,header_hyper=readdlm(cp_hyperbolic,';',header=true);
+  data_criti,header_criti=readdlm(criticals_af,';',header=true);
   close(cp_polynomial)
   close(cp_hyperbolic)
   close(criticals_af)

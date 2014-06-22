@@ -174,10 +174,17 @@ module HelperEquation
     #call simplify on eatch equation
     sequations::Array{Expr,1}=Array(Expr,0)
     for eq in equations
-      seq=simplify(eq)
-      if isa(seq,Expr) 
-        push!(sequations,seq)
-      else
+      try
+        seq=simplify(eq)
+        if isa(seq,Expr) 
+          push!(sequations,seq)
+        else
+        end
+      catch y
+        if isa(y,DomainError)
+          println ("can't simplify following equation:\n",eq);
+        end
+        throw(y)
       end
     end
     #equations=vals*vars (linear equations)
