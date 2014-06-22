@@ -189,10 +189,16 @@ module HelperEquation
 
   function update!(danamodel::DanaModel,rre::Array{Float64,2},vars::Array{String,1})
     somthingUpdated=false
-    fullDetermined=true
+		fullDetermined=true
     si=size(rre)
     clms=si[2]
     rows=si[1]
+		if clms<2 || rows<1
+			return somthingUpdated,false
+		end
+		if rows!=clms-1
+			fullDetermined=false
+		end
     valz=slicedim(rre,2,clms)
     lda=1
     for r = 1:rows

@@ -1,9 +1,10 @@
 reload ("HelperEquation.jl")
 reload ("IdealGasEos.jl")
+reload ("Tables.jl")
 module test
   using HelperEquation
   using IdealGasEos
-  using CpIdeal
+  using Tables
   using Roots
   function testforIdealGasModelWithCp()
     DNIdel=DANAIdealGasEos()
@@ -11,7 +12,7 @@ module test
     DNIdel.T=120.0
     DNIdel.CASNO="95-63-6"
     DNIdel.usePolynomialEstimationOfCp=true
-    DNIdel.C1,DNIdel.C2,DNIdel.C3,DNIdel.C4,DNIdel.C5 = C0Poly("95-63-6")
+    DNIdel.C1,DNIdel.C2,DNIdel.C3,DNIdel.C4,DNIdel.C5 = getValueForCasNo("C0Poly","95-63-6")
     setEquationFlow(DNIdel)
     a=replace(DNIdel)
     println(a[5])
@@ -32,7 +33,7 @@ module test
     DNIdel.T=120.0
     DNIdel.CASNO="95-63-6"
     DNIdel.usePolynomialEstimationOfCp=true
-    DNIdel.C1,DNIdel.C2,DNIdel.C3,DNIdel.C4,DNIdel.C5 = C0Poly("95-63-6")
+    DNIdel.C1,DNIdel.C2,DNIdel.C3,DNIdel.C4,DNIdel.C5 = getValueForCasNo("C0Poly","95-63-6")
     setEquationFlow(DNIdel)
     rVls,vars=solve(DNIdel)
     update!(DNIdel,rVls,vars)
@@ -46,7 +47,7 @@ module test
     DNIdel.v=4000.0
     DNIdel.CASNO="95-63-6"
     DNIdel.usePolynomialEstimationOfCp=true
-    DNIdel.C1,DNIdel.C2,DNIdel.C3,DNIdel.C4,DNIdel.C5 = C0Poly("95-63-6")
+    DNIdel.C1,DNIdel.C2,DNIdel.C3,DNIdel.C4,DNIdel.C5 = getValueForCasNo("C0Poly","95-63-6")
     setEquationFlow(DNIdel)
     somthingUpdated=true
     fullDetermined=false
@@ -65,7 +66,7 @@ module test
     DNIdel.Cp=629657.0
     DNIdel.CASNO="95-63-6"
     DNIdel.usePolynomialEstimationOfCp=true
-    DNIdel.C1,DNIdel.C2,DNIdel.C3,DNIdel.C4,DNIdel.C5 = C0Poly("95-63-6")
+    DNIdel.C1,DNIdel.C2,DNIdel.C3,DNIdel.C4,DNIdel.C5 = getValueForCasNo("C0Poly","95-63-6")
     setEquationFlow(DNIdel)
     somthingUpdated=true
     fullDetermined=false
@@ -83,7 +84,7 @@ module test
     DNIdel.Cp=629657.0
     DNIdel.CASNO="95-63-6"
     DNIdel.usePolynomialEstimationOfCp=true
-    DNIdel.C1,DNIdel.C2,DNIdel.C3,DNIdel.C4,DNIdel.C5 = C0Poly("95-63-6")
+    DNIdel.C1,DNIdel.C2,DNIdel.C3,DNIdel.C4,DNIdel.C5 = getValueForCasNo("C0Poly","95-63-6")
     setEquationFlow(DNIdel)
     somthingUpdated=true
     fullDetermined=false
@@ -95,6 +96,7 @@ module test
         println("************one linear solution done************")
         somthingUpdated,fullDetermined=update!(DNIdel,rVls,vars)
       end
+			println(fullDetermined)
       if !fullDetermined
         i=1
         fullDetermined=true

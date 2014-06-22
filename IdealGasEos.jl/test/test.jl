@@ -1,9 +1,9 @@
 reload ("HelperEquation.jl")
-reload ("IdealGasEos.jl")
+reload ("Tables.jl")
 module test
   using HelperEquation
   using IdealGasEos
-  using CpIdeal
+  using Tables
   using Roots
   function testIDealGas()
     ###### verification: check monoxide Enthalpies with Ref[1]:Table(2-180) #######
@@ -12,7 +12,7 @@ module test
 		# monoxide
     DNIdel.CASNO="630-08-0"
     DNIdel.usePolynomialEstimationOfCp=false
-    DNIdel.C1,DNIdel.C2,DNIdel.C3,DNIdel.C4,DNIdel.C5 = C0Hyper(DNIdel.CASNO)
+    DNIdel.C1,DNIdel.C2,DNIdel.C3,DNIdel.C4,DNIdel.C5 = getValueForCasNo("C0Hyper",DNIdel.CASNO)
     setEquationFlow(DNIdel)
     somthingUpdated=true
     fullDetermined=false
@@ -30,7 +30,7 @@ module test
 			# monoxide
 			DNIdel.CASNO="630-08-0"
 			DNIdel.usePolynomialEstimationOfCp=false
-			DNIdel.C1,DNIdel.C2,DNIdel.C3,DNIdel.C4,DNIdel.C5 = C0Hyper(DNIdel.CASNO)
+			DNIdel.C1,DNIdel.C2,DNIdel.C3,DNIdel.C4,DNIdel.C5 = getValueForCasNo("C0Hyper",DNIdel.CASNO)
 			setEquationFlow(DNIdel)
 			somthingUpdated=true
 			fullDetermined=false
