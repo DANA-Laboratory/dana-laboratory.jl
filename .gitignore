@@ -1,6 +1,5 @@
 /*
 !.gitignore
-!CpIdeal.jl/
 !Tables.jl/
 !DanaModels.jl/
 !DanaTypes.jl/
