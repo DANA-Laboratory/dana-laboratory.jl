@@ -1,11 +1,12 @@
 # REF[1] Engineering and Chemical Thermodynamics, 2nd Edition, Milo D. Koretsky
+# REF[2] http://en.wikipedia.org/wiki/Departure_function
 module PengRobinson
   # Units J,Kmol,Kelvin,pascal
   using DanaTypes
   export DANAPengRobinson,setEquationFlow
   type  DANAPengRobinson <: DanaModel
       DANAPengRobinson()=begin
-        new(8314.4621,"",NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,pi,
+        new(8314.4621,pi,"",NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,
           [
 						:(teta=acos(r/q^1.5)),
 						:(Z1=-2*sqrt(q)*cos(teta/3)-beta/3),
@@ -23,6 +24,8 @@ module PengRobinson
 						:(delta=B^3+B^2-A*B),
 						:(q=(beta*beta-3*gama)/9),
 						:(r=(2*beta^3-9*beta*gama+27*delta)/54),
+            :(h_Dep=R*Tc*((T/Tc)*(Z-1)-2.078*(1+k)*sqrt(alpha)*log((Z+2.414*B)/(Z-0.414*B)))), #REF[2]
+            :(s_Dep=R*(log(Z-B)-2.078*k*((1+k)/sqrt(T/Tc)-k)*log((Z+2.414*B)/(Z-0.414*B)))), #REF[2]
             :(o=cbrt((r^2-q^3)^0.5+abs(r))),
             :(Z=-sign(r)*(o+q/o)-beta/3)
 						#:(PTv=-(((11431*k^2*Tc*v-11431*b*k^2*Tc)*R^2+(-25000*Pc*v^2-50000*b*Pc*v-25000*b^2*Pc)*R)*sqrt(T)+sqrt(Tc)*((-11431*k^2-11431*k)*Tc*v+(11431*b*k^2+11431*b*k)*Tc)*R^2)/((25000*Pc*v^3+25000*b*Pc*v^2-75000*b^2*Pc*v+25000*b^3*Pc)*sqrt(T))),
@@ -37,6 +40,7 @@ module PengRobinson
       end
       #paremeters
       R::Float64
+      pi::Float64
       CASNO::String
       #variables
       v::Float64
@@ -62,19 +66,20 @@ module PengRobinson
 			Z3::Float64
 			Z::Float64
       o::Float64
-      pi::Float64
+      h_Dep::Float64
+      s_Dep::Float64
       #equations
       equations::Array{Expr,1}
       equationsFlow::Array{Expr,1}
   end
   function setEquationFlow(this::DANAPengRobinson)
+    if !isnan(this.q) && !isnan(this.r) && (this.q^3-this.r^2)<0
+      this.equationsFlow=this.equations[5:20];
+    else
+      this.equationsFlow=this.equations[1:18];
+    end
     if isnan(this.Z) && !isnan(this.Z1) && !isnan(this.Z2) && !isnan(this.Z3)
       this.Z=max(this.Z1,this.Z2,this.Z3)
-    end
-    if !isnan(this.q) && !isnan(this.r) && (this.q^3-this.r^2)<0
-      this.equationsFlow=this.equations[5:18];
-    else
-      this.equationsFlow=this.equations[1:16];
     end
   end
 end
