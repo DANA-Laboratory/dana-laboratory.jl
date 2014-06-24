@@ -1,13 +1,36 @@
+# REF[2] Engineering and Chemical Thermodynamics By Milo D. Koretsky
 reload ("HelperEquation.jl")
 reload ("Tables.jl")
 #reload("IdealGasEos.jl/test/test_IdealGasEos.jl");test_IdealGasEos.CompPolyVS_Hyper()
 #reload("IdealGasEos.jl/test/test_IdealGasEos.jl");test_IdealGasEos.forMonoxide()
 #reload("IdealGasEos.jl/test/test_IdealGasEos.jl");test_IdealGasEos.forAcetone()
+#reload("IdealGasEos.jl/test/test_IdealGasEos.jl");test_IdealGasEos.forButane()
 module test_IdealGasEos
   using HelperEquation
   using IdealGasEos
   using Tables
   using Roots
+  # REF[2] Example 5.4
+  function forButane()
+    dh=0.0;h1=0.0;
+    for T in [80+273.15,120+273.15]
+      DNIdel=DANAIdealGasEos()
+      DNIdel.CASNO="106-97-8"
+      DNIdel.usePolynomialEstimationOfCp=false
+      DNIdel.C1,DNIdel.C2,DNIdel.C3,DNIdel.C4,DNIdel.C5 = getValueForCasNo("C0Hyper",DNIdel.CASNO)
+      DNIdel.T=T
+      setEquationFlow(DNIdel)
+      somthingUpdated=true
+      fullDetermined=false
+      while (somthingUpdated && !fullDetermined)
+        rVls,vars=solve(DNIdel)
+        somthingUpdated,fullDetermined=update!(DNIdel,rVls,vars)
+      end
+      dh=DNIdel.h-h1
+      h1=DNIdel.h
+    end
+    println("result is=",dh/1000,"j/mol ref[2] page285:",4696)
+  end
   function CompPolyVS_Hyper()
     h_poly::Array{Float64,1}=Array(Float64,0)
     h_hyper::Array{Float64,1}=Array(Float64,0)
@@ -46,7 +69,7 @@ module test_IdealGasEos
 		i=1;
     h_Dep::Array{Float64,1}=Array(Float64,0)
     cp_Dep::Array{Float64,1}=Array(Float64,0)
-		for T in [200,328.84,350,400,450,500,550,1500]
+		for T in [328.84,350,400,450,500,550]
 			DNIdel=DANAIdealGasEos()
 			DNIdel.T=T
 			# monoxide
@@ -64,7 +87,7 @@ module test_IdealGasEos
       push!(cp_Dep,DNIdel.Cp)
 			i+=1;
 		end
-    println(" Cp=",cp_Dep);
+    # println(" Cp=",cp_Dep);
     return (h_Dep)
   end
   function forMonoxide()
