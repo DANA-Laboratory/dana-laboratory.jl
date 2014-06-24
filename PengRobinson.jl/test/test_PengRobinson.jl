@@ -7,6 +7,7 @@ reload ("PengRobinson.jl")
 reload ("Calculus.jl")
 #reload("PengRobinson.jl/test/test_PengRobinson.jl");test_PengRobinson.testPR()
 #reload("PengRobinson.jl/test/test_PengRobinson.jl");test_PengRobinson.testDeparture()
+#reload("PengRobinson.jl/test/test_PengRobinson.jl");test_PengRobinson.testVariousKnowns()
 module test_PengRobinson
   using HelperEquation
   using PengRobinson
@@ -14,6 +15,44 @@ module test_PengRobinson
   using Roots
   reload ("IdealGasEos.jl/test/test_IdealGasEos.jl")
   using test_IdealGasEos
+	function testVariousKnowns()
+		#P & T
+		# butane
+		PR=DANAPengRobinson()
+		PR.Tc,PR.Pc,PR.af=getValueForCasNo("Criticals","106-97-8")
+		PR.P=9.47*1e5
+		PR.T=80+273.15
+		somthingUpdated=true
+    fullDetermined=false
+    while (somthingUpdated && !fullDetermined)
+      setEquationFlow(PR);
+      rVls,vars,nonliFuns,nonliVars=solve(PR)
+      somthingUpdated,fullDetermined=update!(PR,rVls,vars)
+    end
+		if fullDetermined
+			println("solved! PR.v=",PR.v)
+			v=PR.v
+		end
+		#v & T
+		PR=DANAPengRobinson()
+		PR.Tc,PR.Pc,PR.af=getValueForCasNo("Criticals","106-97-8")
+		PR.v=v
+		PR.T=80+273.15
+		somthingUpdated=true
+    fullDetermined=false
+    while (somthingUpdated && !fullDetermined)
+      setEquationFlow(PR);
+      rVls,vars,nonliFuns,nonliVars=solve(PR)
+      somthingUpdated,fullDetermined=update!(PR,rVls,vars)
+
+			println(rVls)
+			println(vars)
+
+		end
+		if fullDetermined
+			println("solved! PR.P=",PR.P)
+		end
+	end 
   # Verification REF[2] Example 5.4
   function testDeparture()
     DNpr1=DANAPengRobinson()
