@@ -6,17 +6,16 @@ module PengRobinson
   export DANAPengRobinson,setEquationFlow
   type  DANAPengRobinson <: DanaModel
       DANAPengRobinson()=begin
-        new(8314.4621,pi,"",NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,
+        new(8314.4621,pi,"",NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,
           [
 						:(teta=acos(r/q^1.5)),
 						:(Z1=-2*sqrt(q)*cos(teta/3)-beta/3),
 						:(Z2=-2*sqrt(q)*cos((teta+2*pi)/3)-beta/3),
 						:(Z3=-2*sqrt(q)*cos((teta+4*pi)/3)-beta/3),
+						:(P=R*T/(v-b)-((0.45724*(R^2)*(Tc^2)*(1+k*(1-sqrt(T/Tc)))^2)/Pc)/(v*v+2*b*v-b*b)),
             :(Z=P*v/R/T),
 						:(k=0.37464+1.54226*af-0.26992*af^2),
-						:(alpha=(1+k*(1-sqrt(T/Tc)))^2),
-						:(a=0.45724*R^2*Tc^2/Pc*alpha),
-						:(A=a*P/R^2/T^2),
+						:(A=((0.45724*(R^2)*(Tc^2)*(1+k*(1-sqrt(T/Tc)))^2)/Pc)*P/R^2/T^2),
 						:(b=0.0778*R*Tc/Pc),
 						:(B=b*P/R/T),
 						:(beta=B-1),
@@ -24,7 +23,8 @@ module PengRobinson
 						:(delta=B^3+B^2-A*B),
 						:(q=(beta*beta-3*gama)/9),
 						:(r=(2*beta^3-9*beta*gama+27*delta)/54),
-            :(h_Dep=R*Tc*((T/Tc)*(Z-1)-2.078*(1+k)*sqrt(alpha)*log((Z+2.414*B)/(Z-0.414*B)))), #REF[2]
+            :(h_Dep=R*Tc*((T/Tc)*(Z-1)-2.078*(1+k)*sqrt((1+k*(1-sqrt(T/Tc)))^2)*log((Z+2.414*B)/(Z-0.414*B)))), #REF[2]
+						#:(h_Dep_aletr=R*((0.45724*R*(1+k-k*sqrt(T/Tc))^2*Tc^2*(v/(b^2-2*b*v-v^2)-atanh((b+v)/(sqrt(2)*b))/(sqrt(2)*b)))/Pc+T*(b/(-b+v)-log(-b+v))+T*((0.32331750462973696*k*R*(-1.+k*(-1.+sqrt(T/Tc)))*Tc*atanh((b+v)/(sqrt(2)*b)))/(b*Pc*sqrt(T/Tc))+log(-b+v)))),
             :(s_Dep=R*(log(Z-B)-2.078*k*((1+k)/sqrt(T/Tc)-k)*log((Z+2.414*B)/(Z-0.414*B)))), #REF[2]
             :(o=cbrt((r^2-q^3)^0.5+abs(r))),
             :(Z=-sign(r)*(o+q/o)-beta/3)
@@ -49,8 +49,6 @@ module PengRobinson
       P::Float64
       Pc::Float64
 			k::Float64
-			alpha::Float64
-			a::Float64
 			A::Float64
 			b::Float64
 			B::Float64
@@ -68,15 +66,16 @@ module PengRobinson
       o::Float64
       h_Dep::Float64
       s_Dep::Float64
+			#h_Dep_aletr::Float64
       #equations
       equations::Array{Expr,1}
       equationsFlow::Array{Expr,1}
   end
   function setEquationFlow(this::DANAPengRobinson)
     if !isnan(this.q) && !isnan(this.r) && (this.q^3-this.r^2)<0
-      this.equationsFlow=this.equations[5:20];
+      this.equationsFlow=this.equations[5:19];
     else
-      this.equationsFlow=this.equations[1:18];
+      this.equationsFlow=this.equations[1:17];
     end
     if isnan(this.Z) && !isnan(this.Z1) && !isnan(this.Z2) && !isnan(this.Z3)
       this.Z=max(this.Z1,this.Z2,this.Z3)

@@ -18,6 +18,7 @@ module test_PengRobinson
 	function testVariousKnowns()
 		#P & T
 		# butane
+		v=0.0;
 		PR=DANAPengRobinson()
 		PR.Tc,PR.Pc,PR.af=getValueForCasNo("Criticals","106-97-8")
 		PR.P=9.47*1e5
@@ -28,10 +29,10 @@ module test_PengRobinson
       setEquationFlow(PR);
       rVls,vars,nonliFuns,nonliVars=solve(PR)
       somthingUpdated,fullDetermined=update!(PR,rVls,vars)
-    end
-		if fullDetermined
-			println("solved! PR.v=",PR.v)
-			v=PR.v
+			if fullDetermined
+				println("solved for v! PR.v=",PR.v)
+				v=PR.v
+			end
 		end
 		#v & T
 		PR=DANAPengRobinson()
@@ -44,14 +45,40 @@ module test_PengRobinson
       setEquationFlow(PR);
       rVls,vars,nonliFuns,nonliVars=solve(PR)
       somthingUpdated,fullDetermined=update!(PR,rVls,vars)
-
-			println(rVls)
-			println(vars)
-
+			if fullDetermined
+				println("solved for P! PR.P=",PR.P)
+			end
 		end
-		if fullDetermined
-			println("solved! PR.P=",PR.P)
+		#v & P
+		PR=DANAPengRobinson()
+		PR.Tc,PR.Pc,PR.af=getValueForCasNo("Criticals","106-97-8")
+		PR.v=v
+		PR.P=9.47*1e5
+		somthingUpdated=true
+    fullDetermined=false
+    while (somthingUpdated && !fullDetermined)
+      setEquationFlow(PR);
+      rVls,vars,nonliFuns,nonliVars=solve(PR)
+      somthingUpdated,fullDetermined=update!(PR,rVls,vars)
+			if !fullDetermined
+				i=1
+				fullDetermined=true
+				while (i<=length(nonliFuns))
+					if length(nonliVars[i])==1
+						result=Roots.fzero(nonliFuns[i],[0,typemax(Int64)])
+						HelperEquation.setfield(PR,nonliVars[i][1],result)
+						somthingUpdated=true
+					else
+						fullDetermined=false
+					end 
+					i=i+1
+				end
+			end
+			if fullDetermined
+				println("solved for T! PR.T=",PR.T)
+			end
 		end
+		return PR
 	end 
   # Verification REF[2] Example 5.4
   function testDeparture()
