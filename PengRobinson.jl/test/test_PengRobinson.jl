@@ -13,6 +13,7 @@ module test_PengRobinson
   using PengRobinson
   using Tables
   using Roots
+  using Optim
   reload ("IdealGasEos.jl/test/test_IdealGasEos.jl")
   using test_IdealGasEos
 	function testVariousKnowns()
@@ -79,8 +80,25 @@ module test_PengRobinson
 				println("solved for T! PR.T=",PR.T)
 			end
 		end
-		return PR
+    #h & P
+    global y=PR
+    res=optimize(optFunctionHP, [PR.T/20,PR.h_Dep2/20]);
+    return res;
 	end 
+  function optFunctionHP(x::Vector)
+    b=y.b
+    R=y.R
+    Tc=y.Tc
+    v=y.v
+    d=y.d
+    k=y.k
+    P=y.P
+    T=x[1];
+    h_Dep2=x[2];
+    ret1=h_Dep2-((-4*(b^3*R*T*Tc-2*b^2*R*T*Tc*v+d*(Tc-2*k*(-1+sqrt(T/Tc))*Tc+k^2*(T+Tc-2*sqrt(T/Tc)*Tc))*v^2-b*v*(d*(Tc-2*k*(-1+sqrt(T/Tc))*Tc+k^2*(T+Tc-2*sqrt(T/Tc)*Tc))+R*T*Tc*v)))/(Tc*(b-v)*(b^2-2*b*v-v^2))-(sqrt(2)*d*(1+k)*(-1+k*(-1+sqrt(T/Tc)))*log(-1+(b+v)/(sqrt(2)*b)))/b+(sqrt(2)*d*(1+k)*(-1+k*(-1+sqrt(T/Tc)))*log(1+(b+v)/(sqrt(2)*b)))/b)/4;
+		ret2=P-R*T/(v-b)+(d*(1+k*(1-sqrt(T/Tc)))^2)/(v*v+2*b*v-b*b);
+    return ret1^2+ret2^2;
+  end
   # Verification REF[2] Example 5.4
   function testDeparture()
     DNpr1=DANAPengRobinson()
