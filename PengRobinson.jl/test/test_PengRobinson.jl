@@ -17,12 +17,13 @@ module test_PengRobinson
   using test_IdealGasEos
 	function testVariousKnowns()
 		#P & T
-		# butane
+		# butane # 106-97-8
+		cNo="75-07-0"
 		v=0.0;
 		PR=DANAPengRobinson()
-		PR.Tc,PR.Pc,PR.af=getValueForCasNo("Criticals","106-97-8")
-		PR.P=9.47*1e5
-		PR.T=80+273.15
+		PR.Tc,PR.Pc,PR.af=getValueForCasNo("Criticals",cNo) 
+		PR.P=PR.Pc
+		PR.T=PR.Tc
 		somthingUpdated=true
     fullDetermined=false
     while (somthingUpdated && !fullDetermined)
@@ -36,9 +37,9 @@ module test_PengRobinson
 		end
 		#v & T
 		PR=DANAPengRobinson()
-		PR.Tc,PR.Pc,PR.af=getValueForCasNo("Criticals","106-97-8")
+		PR.Tc,PR.Pc,PR.af=getValueForCasNo("Criticals",cNo)
 		PR.v=v
-		PR.T=80+273.15
+		PR.T=PR.Tc
 		somthingUpdated=true
     fullDetermined=false
     while (somthingUpdated && !fullDetermined)
@@ -51,9 +52,9 @@ module test_PengRobinson
 		end
 		#v & P
 		PR=DANAPengRobinson()
-		PR.Tc,PR.Pc,PR.af=getValueForCasNo("Criticals","106-97-8")
+		PR.Tc,PR.Pc,PR.af=getValueForCasNo("Criticals",cNo)
 		PR.v=v
-		PR.P=9.47*1e5
+		PR.P=PR.Pc
 		somthingUpdated=true
     fullDetermined=false
     while (somthingUpdated && !fullDetermined)
