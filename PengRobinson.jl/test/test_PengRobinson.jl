@@ -8,6 +8,7 @@ reload ("Calculus.jl")
 #reload("PengRobinson.jl/test/test_PengRobinson.jl");test_PengRobinson.testPR()
 #reload("PengRobinson.jl/test/test_PengRobinson.jl");test_PengRobinson.testDeparture()
 #reload("PengRobinson.jl/test/test_PengRobinson.jl");test_PengRobinson.testVariousKnowns()
+#reload("PengRobinson.jl/test/test_PengRobinson.jl");test_PengRobinson.testMoreThanOneNonLinear()
 module test_PengRobinson
   using HelperEquation
   using PengRobinson
@@ -16,6 +17,55 @@ module test_PengRobinson
   using Optim
   reload ("IdealGasEos.jl/test/test_IdealGasEos.jl")
   using test_IdealGasEos
+	function getAllEquationS(from::Int,to::Int,numberOfEquations::Int)
+		if 1<numberOfEquations
+			jj::Vector=Vector[]
+			for k in [from+1:to]
+				j=getAllEquationS(k,to,numberOfEquations-1)
+				jj=append!(jj,[push!(e,k-1) for e in j])
+			end
+			return jj
+		else
+			return [[i] for i in from:to]
+		end
+	end
+	function testMoreThanOneNonLinear()
+		cNo="75-07-0"
+		PR=DANAPengRobinson()
+		PR.Tc,PR.Pc,PR.af=getValueForCasNo("Criticals",cNo) 
+		PR.P=PR.Pc
+		PR.T=PR.Tc
+		somthingUpdated=true
+    fullDetermined=false
+    while (somthingUpdated && !fullDetermined)
+      setEquationFlow(PR);
+      rVls,vars,nonliFuns,nonliVars=solve(PR)
+      somthingUpdated,fullDetermined=update!(PR,rVls,vars)
+			if !fullDetermined
+				i=1
+				fullDetermined=true
+				while (i<=length(nonliFuns))
+					if length(nonliVars[i])==1
+						result=Roots.fzero(nonliFuns[i],[0,typemax(Int64)])
+						HelperEquation.setfield(PR,nonliVars[i][1],result)
+						somthingUpdated=true
+					else
+						fullDetermined=false
+					end 
+					i=i+1
+				end
+			end
+			if fullDetermined
+				println("solved for T! PR.T=",PR.T)
+			end
+		end
+		#*******************
+		for i in 1:numberOfEquations
+			for j in aviv[i]
+			end
+		end
+	end
+	#*********************
 	function testVariousKnowns()
 		#P & T
 		# butane # 106-97-8
