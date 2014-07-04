@@ -39,12 +39,15 @@ module test_PengRobinson
     fullDetermined=false
     while (somthingUpdated && !fullDetermined)
       setEquationFlow(PR);
+			#linear solver
       rVls,vars,nonliFuns,nonliVars=solve(PR)
       somthingUpdated,fullDetermined=update!(PR,rVls,vars)
 			if !fullDetermined
 				i=1
 				fullDetermined=true
-				while (i<=length(nonliFuns))
+				#search for non-linear equations with only one unknown
+				numberOfEquations=length(nonliFuns)
+				while (i<=numberOfEquations && !somthingUpdated)
 					if length(nonliVars[i])==1
 						result=Roots.fzero(nonliFuns[i],[0,typemax(Int64)])
 						HelperEquation.setfield(PR,nonliVars[i][1],result)
@@ -53,6 +56,21 @@ module test_PengRobinson
 						fullDetermined=false
 					end 
 					i=i+1
+				end
+				#fail to fined non-linear equations with only one unknown 
+				if (!somthingUpdated)
+					i=2
+					while (i<numberOfEquations && !somthingUpdated)
+						eqIndexes=getAllEquationS(1,numberOfEquations,i)
+						for eqIndex in eqIndexes
+							if length(union(getindex(nonliVars,eqIndex)...)) is i
+								eqGroup=getindex(nonliFuns,eqIndex)
+								res=optimize(y->sum(map(x->abs(apply(x,y)),eqGroup)),zeros(i))
+								somthingUpdated=true
+								break
+							end
+						end
+					end
 				end
 			end
 			if fullDetermined
