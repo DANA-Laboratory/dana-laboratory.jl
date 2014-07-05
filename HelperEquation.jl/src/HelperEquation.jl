@@ -73,13 +73,13 @@ module HelperEquation
   function analysis(exps::Array{Expr,1})
     syms::Array{String,1}=Array(String,0)
     nolinearFunctions::Array{Function,1}=Array(Function,0)
-    nolinearArgs::Array{Array{String,1},1}=Array(Array{String,1},0)
+    nolinearArgs::Array{Set{String},1}=Array(Set{String},0)
     #by default expr must have a constant symbol
     push!(syms,"constant")
     i=1
     facs::Array{Array{Float64,1},1}=Array(Array{Float64,1},length(exps))
     for exp in exps
-      symsLoc::Array{String,1}=Array(String,0)
+      symsLoc::Set{String}=Set{String}()
       fac=analysis!(exp,syms,symsLoc)
       #linear equation
       if length(fac)>0
@@ -100,15 +100,13 @@ module HelperEquation
     return  circshift(vals,(0,-1)) , circshift(syms,-1) , nolinearFunctions , nolinearArgs
   end
   
-  analysis!(num::Number,syms::Array{String,1},symsLoc::Array{String,1})=[num]
+  analysis!(num::Number,syms::Array{String,1},symsLoc::Set{String})=[num]
   
-  analysis!(sym::Symbol,syms::Array{String,1},symsLoc::Array{String,1})=analysis!(string(sym),syms,symsLoc)
+  analysis!(sym::Symbol,syms::Array{String,1},symsLoc::Set{String})=analysis!(string(sym),syms,symsLoc)
   
-  function analysis!(ssym::String,syms::Array{String,1},symsLoc::Array{String,1})
+  function analysis!(ssym::String,syms::Array{String,1},symsLoc::Set{String})
     index = findfirst(syms,ssym)
-    if findfirst(symsLoc,ssym)==0
-      push!(symsLoc,ssym)
-    end
+    push!(symsLoc,ssym)
     if index==0
       push!(syms,ssym)
       index=length(syms)
@@ -118,7 +116,7 @@ module HelperEquation
     return fac
   end
   
-  function analysis!(exp::Expr,syms::Array{String,1},symsLoc::Array{String,1})
+  function analysis!(exp::Expr,syms::Array{String,1},symsLoc::Set{String})
     if exp.head==:.
       return analysis!(string(exp),syms,symsLoc)
     end

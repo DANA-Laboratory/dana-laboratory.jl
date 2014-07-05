@@ -17,6 +17,7 @@ module test_PengRobinson
   using Optim
   reload ("IdealGasEos.jl/test/test_IdealGasEos.jl")
   using test_IdealGasEos
+	
 	function getAllEquationS(from::Int,to::Int,numberOfEquations::Int)
 		if 1<numberOfEquations
 			jj::Vector=Vector[]
@@ -29,57 +30,67 @@ module test_PengRobinson
 			return [[i] for i in from:to]
 		end
 	end
+	#*********************
 	function testMoreThanOneNonLinear()
-		cNo="75-07-0"
-		PR=DANAPengRobinson()
-		PR.Tc,PR.Pc,PR.af=getValueForCasNo("Criticals",cNo) 
-		PR.P=PR.Pc
-		PR.T=PR.Tc
-		somthingUpdated=true
-    fullDetermined=false
-    while (somthingUpdated && !fullDetermined)
-      setEquationFlow(PR);
-			#linear solver
-      rVls,vars,nonliFuns,nonliVars=solve(PR)
-      somthingUpdated,fullDetermined=update!(PR,rVls,vars)
-			if !fullDetermined
-				i=1
-				fullDetermined=true
-				#search for non-linear equations with only one unknown
-				numberOfEquations=length(nonliFuns)
-				while (i<=numberOfEquations && !somthingUpdated)
-					if length(nonliVars[i])==1
-						result=Roots.fzero(nonliFuns[i],[0,typemax(Int64)])
-						HelperEquation.setfield(PR,nonliVars[i][1],result)
-						somthingUpdated=true
-					else
-						fullDetermined=false
-					end 
-					i=i+1
+		nonliFuns::Array{Function,1}=Array(Function,0)
+		nonliVars::Array{Set{String},1}=Array(Set{String},0)
+		for k in [1:3]
+			cNo="75-07-0"
+			PR=DANAPengRobinson()
+			PR.Tc,PR.Pc,PR.af=getValueForCasNo("Criticals",cNo) 
+			PR.P,PR.T,PR.v=[(PR.Pc,PR.Tc,NaN),(NaN,PR.Tc,0.22435958119569624),(PR.Pc,NaN,0.22435958119569624)][k]
+			somthingUpdated=true
+			fullDetermined=false
+			while (somthingUpdated && !fullDetermined)
+				while (somthingUpdated && !fullDetermined)
+					setEquationFlow(PR);
+					#linear solver
+					rVls,vars,nonliFuns,nonliVars=solve(PR)
+					somthingUpdated,fullDetermined=update!(PR,rVls,vars)
+					println("Linear Solver.")
 				end
+				if !fullDetermined
+					somthingUpdated=false
+					i=1
+					fullDetermined=true
+					#search for non-linear equations with only one unknown
+					numberOfEquations=length(nonliFuns)
+					while (i<=numberOfEquations && !somthingUpdated)
+						if length(nonliVars[i])==1
+							result=Roots.fzero(nonliFuns[i],[0,typemax(Int64)])
+							HelperEquation.setfield(PR,[nonliVars[i]...][1],result)
+							somthingUpdated=true
+							println("non-Linear Solver, solves one equation.")
+						else
+							fullDetermined=false
+						end 
+						i=i+1
+					end
+				end
+			end
+			if !fullDetermined
+				println("non-Linear multi-Equation Solver.")
 				#fail to fined non-linear equations with only one unknown 
 				if (!somthingUpdated)
 					i=2
 					while (i<numberOfEquations && !somthingUpdated)
 						eqIndexes=getAllEquationS(1,numberOfEquations,i)
 						for eqIndex in eqIndexes
-							if length(union(getindex(nonliVars,eqIndex)...)) is i
+							if length(union(getindex(nonliVars,eqIndex)...)) == i
 								eqGroup=getindex(nonliFuns,eqIndex)
 								res=optimize(y->sum(map(x->abs(apply(x,y)),eqGroup)),zeros(i))
+								println("eqGroup=",eqGroup," result=",res);
 								somthingUpdated=true
+								return PR;######TODO
 								break
 							end
 						end
+						i+=1
 					end
 				end
 			end
 			if fullDetermined
-				println("solved for T! PR.T=",PR.T)
-			end
-		end
-		#*******************
-		for i in 1:numberOfEquations
-			for j in aviv[i]
+				println("Solution Done! v=",round(PR.v,5)," T=",round(PR.T,5)," P=",round(PR.P,5)," h=",round(PR.h_Dep,5))
 			end
 		end
 	end
