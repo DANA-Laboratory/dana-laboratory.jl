@@ -14,7 +14,7 @@ module test_PengRobinson
   using PengRobinson
   using Tables
   using Roots
-  using Optim
+	using NLopt
   reload ("IdealGasEos.jl/test/test_IdealGasEos.jl")
   using test_IdealGasEos
 	
@@ -34,11 +34,11 @@ module test_PengRobinson
 	function testMoreThanOneNonLinear()
 		nonliFuns::Array{Function,1}=Array(Function,0)
 		nonliVars::Array{Set{String},1}=Array(Set{String},0)
-		for k in [1:3]
+		for k in [1:4]
 			cNo="75-07-0"
 			PR=DANAPengRobinson()
 			PR.Tc,PR.Pc,PR.af=getValueForCasNo("Criticals",cNo) 
-			PR.P,PR.T,PR.v=[(PR.Pc,PR.Tc,NaN),(NaN,PR.Tc,0.22435958119569624),(PR.Pc,NaN,0.22435958119569624)][k]
+			PR.h_Dep2,PR.P,PR.T,PR.v=[(NaN,PR.Pc,PR.Tc,NaN),(NaN,NaN,PR.Tc,0.22435958119569624),(NaN,PR.Pc,NaN,0.22435958119569624),(-1.08307222504879e7,PR.Pc,NaN,NaN)][k]
 			somthingUpdated=true
 			fullDetermined=false
 			while (somthingUpdated && !fullDetermined)
@@ -69,6 +69,7 @@ module test_PengRobinson
 				end
 			end
 			if !fullDetermined
+				numberOfEquations=length(nonliFuns)
 				println("non-Linear multi-Equation Solver.")
 				#fail to fined non-linear equations with only one unknown 
 				if (!somthingUpdated)
@@ -78,8 +79,22 @@ module test_PengRobinson
 						for eqIndex in eqIndexes
 							if length(union(getindex(nonliVars,eqIndex)...)) == i
 								eqGroup=getindex(nonliFuns,eqIndex)
-								res=optimize(y->sum(map(x->abs(apply(x,y)),eqGroup)),zeros(i))
-								println("eqGroup=",eqGroup," result=",res);
+								println("eqGroup=",eqIndex," for vars:",getindex(nonliVars,eqIndex))
+								
+								opt = Opt(:GN_DIRECT_L, 2)
+								lower_bounds!(opt, [1.0e-3, 300])
+								upper_bounds!(opt, [10.0,2500])
+								stopval!(opt, 0.)
+								maxtime!(opt, 1.0)
+								#ftol_abs!(opt, 1.0e-19)
+								#ftol_rel!(opt, 1.0e-18)
+								min_objective!(opt, (y,gradient)->sum(map(x->(apply(x,y))^2,eqGroup)))
+
+								(minf,minx,ret)=optimize(opt,[0.5,400.0])
+								println("got $minf at $minx (returned $ret)")
+								return PR;
+								res=optimize(y->sum(map(x->abs(apply(x,y)),eqGroup)),[0.22436,466])
+								println("eqGroup=",eqIndex," for vars:",union(getindex(nonliVars,eqIndex)...)," result=",res);
 								somthingUpdated=true
 								return PR;######TODO
 								break
@@ -90,7 +105,7 @@ module test_PengRobinson
 				end
 			end
 			if fullDetermined
-				println("Solution Done! v=",round(PR.v,5)," T=",round(PR.T,5)," P=",round(PR.P,5)," h=",round(PR.h_Dep,5))
+				println("Solution Done! v=",round(PR.v,7)," T=",round(PR.T,7)," P=",round(PR.P,7)," h=",round(PR.h_Dep2,7))
 			end
 		end
 	end
