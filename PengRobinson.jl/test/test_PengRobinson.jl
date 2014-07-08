@@ -43,64 +43,68 @@ module test_PengRobinson
 			fullDetermined=false
 			while (somthingUpdated && !fullDetermined)
 				while (somthingUpdated && !fullDetermined)
-					setEquationFlow(PR);
-					#linear solver
-					rVls,vars,nonliFuns,nonliVars=solve(PR)
-					somthingUpdated,fullDetermined=update!(PR,rVls,vars)
-					println("Linear Solver.")
-				end
-				if !fullDetermined
-					somthingUpdated=false
-					i=1
-					fullDetermined=true
-					#search for non-linear equations with only one unknown
-					numberOfEquations=length(nonliFuns)
-					while (i<=numberOfEquations && !somthingUpdated)
-						if length(nonliVars[i])==1
-							result=Roots.fzero(nonliFuns[i],[0,typemax(Int64)])
-							HelperEquation.setfield(PR,[nonliVars[i]...][1],result)
-							somthingUpdated=true
-							println("non-Linear Solver, solves one equation.")
-						else
-							fullDetermined=false
-						end 
-						i=i+1
+					while (somthingUpdated && !fullDetermined)
+						setEquationFlow(PR);
+						#linear solver
+						rVls,vars,nonliFuns,nonliVars=solve(PR)
+						somthingUpdated,fullDetermined=update!(PR,rVls,vars)
+						println("Linear Solver.")
+					end
+					if !fullDetermined
+						somthingUpdated=false
+						i=1
+						fullDetermined=true
+						#search for non-linear equations with only one unknown
+						numberOfEquations=length(nonliFuns)
+						while (i<=numberOfEquations && !somthingUpdated)
+							if length(nonliVars[i])==1
+								result=Roots.fzero(nonliFuns[i],[0,typemax(Int64)])
+								HelperEquation.setfield(PR,[nonliVars[i]...][1],result)
+								somthingUpdated=true
+								println("non-Linear Solver, solves one equation.")
+							else
+								fullDetermined=false
+							end 
+							i=i+1
+						end
 					end
 				end
-			end
-			if !fullDetermined
-				numberOfEquations=length(nonliFuns)
-				println("non-Linear multi-Equation Solver.")
-				#fail to fined non-linear equations with only one unknown 
-				if (!somthingUpdated)
-					i=2
-					while (i<numberOfEquations && !somthingUpdated)
-						eqIndexes=getAllEquationS(1,numberOfEquations,i)
-						for eqIndex in eqIndexes
-							if length(union(getindex(nonliVars,eqIndex)...)) == i
-								eqGroup=getindex(nonliFuns,eqIndex)
-								println("eqGroup=",eqIndex," for vars:",getindex(nonliVars,eqIndex))
-								
-								opt = Opt(:GN_DIRECT_L, 2)
-								lower_bounds!(opt, [1.0e-3, 300])
-								upper_bounds!(opt, [10.0,2500])
-								stopval!(opt, 0.)
-								maxtime!(opt, 1.0)
-								#ftol_abs!(opt, 1.0e-19)
-								#ftol_rel!(opt, 1.0e-18)
-								min_objective!(opt, (y,gradient)->sum(map(x->(apply(x,y))^2,eqGroup)))
-
-								(minf,minx,ret)=optimize(opt,[0.5,400.0])
-								println("got $minf at $minx (returned $ret)")
-								return PR;
-								res=optimize(y->sum(map(x->abs(apply(x,y)),eqGroup)),[0.22436,466])
-								println("eqGroup=",eqIndex," for vars:",union(getindex(nonliVars,eqIndex)...)," result=",res);
-								somthingUpdated=true
-								return PR;######TODO
-								break
+				if !fullDetermined
+					numberOfEquations=length(nonliFuns)
+					println("non-Linear multi-Equation Solver.")
+					#fail to fined non-linear equations with only one unknown 
+					if (!somthingUpdated)
+						i=2
+						while (i<=numberOfEquations && !somthingUpdated)
+							eqIndexes=getAllEquationS(1,numberOfEquations,i)
+							for eqIndex in eqIndexes
+								if length(union(getindex(nonliVars,eqIndex)...)) == i
+									eqGroup=getindex(nonliFuns,eqIndex)
+									println("eqGroup=",eqIndex," for vars:",getindex(nonliVars,eqIndex))
+									opt = Opt(:GN_DIRECT_L, i)
+									lower_bounds!(opt, [1.0e-3, 300])
+									upper_bounds!(opt, [10.0,2500])
+									stopval!(opt, 1.0e-12)
+									maxtime!(opt, 1.0*i)
+									#ftol_abs!(opt, 1.0e-19)
+									#ftol_rel!(opt, 1.0e-18)
+									min_objective!(opt, (y,gradient)->sum(map(x->(apply(x,y))^2,eqGroup)))
+									(minf,minx,ret)=optimize(opt,[0.5,400.0])
+									println("got $minf at $minx (returned $ret)")
+									if "$ret"=="STOPVAL_REACHED"
+										for j in [1:i]
+											HelperEquation.setfield(PR,[nonliVars[eqIndex[1]]...][j],minx[j])
+										end
+										somthingUpdated=true
+										if i==numberOfEquations
+											fullDetermined=true
+										end
+										break
+									end
+								end
 							end
+							i+=1
 						end
-						i+=1
 					end
 				end
 			end
