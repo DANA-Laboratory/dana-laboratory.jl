@@ -34,11 +34,11 @@ module test_PengRobinson
 	function testMoreThanOneNonLinear()
 		nonliFuns::Array{Function,1}=Array(Function,0)
 		nonliVars::Array{Set{String},1}=Array(Set{String},0)
-		for k in [1:4]
+		for k in [1:5]
 			cNo="75-07-0"
 			PR=DANAPengRobinson()
 			PR.Tc,PR.Pc,PR.af=getValueForCasNo("Criticals",cNo) 
-			PR.h_Dep2,PR.P,PR.T,PR.v=[(NaN,PR.Pc,PR.Tc,NaN),(NaN,NaN,PR.Tc,0.22435958119569624),(NaN,PR.Pc,NaN,0.22435958119569624),(-1.08307222504879e7,PR.Pc,NaN,NaN)][k]
+			PR.h_Dep,PR.h_Dep2,PR.P,PR.T,PR.v=[(NaN,NaN,PR.Pc,PR.Tc,NaN),(NaN,NaN,NaN,PR.Tc,0.22435958119569624),(NaN,NaN,PR.Pc,NaN,0.22435958119569624),(NaN,-1.08307222504879e7,PR.Pc,NaN,NaN),(-1.08307222504879e7,NaN,PR.Pc,NaN,NaN)][k]
 			somthingUpdated=true
 			fullDetermined=false
 			while (somthingUpdated && !fullDetermined)

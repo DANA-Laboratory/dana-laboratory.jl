@@ -14,7 +14,6 @@ module PengRobinson
 						:(Z3=-2*sqrt(q)*cos((teta+4*pi)/3)-beta/3),
 						:(P=R*T/(v-b)-(d*(1+k*(1-sqrt(T/Tc)))^2)/(v*v+2*b*v-b*b)),
             :(Z=P*v/R/T),
-						:(k=0.37464+1.54226*af-0.26992*af^2),
 						:(A=(d*(1+k*(1-sqrt(T/Tc)))^2)*P/R^2/T^2),
 						:(b=0.0778*R*Tc/Pc),
 						:(B=b*P/R/T),
@@ -28,7 +27,9 @@ module PengRobinson
 						:(h_Dep2=((-4*(b^3*R*T*Tc-2*b^2*R*T*Tc*v+d*(Tc-2*k*(-1+sqrt(T/Tc))*Tc+k^2*(T+Tc-2*sqrt(T/Tc)*Tc))*v^2-b*v*(d*(Tc-2*k*(-1+sqrt(T/Tc))*Tc+k^2*(T+Tc-2*sqrt(T/Tc)*Tc))+R*T*Tc*v)))/(Tc*(b-v)*(b^2-2*b*v-v^2))-(sqrt(2)*d*(1+k)*(-1+k*(-1+sqrt(T/Tc)))*log(-1+(b+v)/(sqrt(2)*b)))/b+(sqrt(2)*d*(1+k)*(-1+k*(-1+sqrt(T/Tc)))*log(1+(b+v)/(sqrt(2)*b)))/b)/4),
             :(d=0.45724*R^2*Tc^2/Pc),
 						:(o=cbrt((r^2-q^3)^0.5+abs(r))),
-            :(Z=-sign(r)*(o+q/o)-beta/3)
+            :(Z=-sign(r)*(o+q/o)-beta/3),
+						:(k=0.37464+1.54226*af-0.26992*af^2),
+						:(k=0.379642+1.48503*af-0.164423*af^2+0.016666*af^3)
 						#:(PTv=-(((11431*k^2*Tc*v-11431*b*k^2*Tc)*R^2+(-25000*Pc*v^2-50000*b*Pc*v-25000*b^2*Pc)*R)*sqrt(T)+sqrt(Tc)*((-11431*k^2-11431*k)*Tc*v+(11431*b*k^2+11431*b*k)*Tc)*R^2)/((25000*Pc*v^3+25000*b*Pc*v^2-75000*b^2*Pc*v+25000*b^3*Pc)*sqrt(T))),
 						#s calculation REF[1] EQ(5.31)
 						#:(PTvIv=R*(sqrt((2)*(50000*b*Pc*sqrt(T)-11431*k*R*(-(k*sqrt(T))+sqrt(Tc)+k*sqrt(Tc))*Tc)*atanh((b+v)/(sqrt(2)*b))+25000*b*Pc*sqrt(T)*(4*log(-b+v)-log(-b^2+2*b*v+v^2))))/(50000*b*Pc*sqrt(T))),
@@ -76,10 +77,16 @@ module PengRobinson
   end
   function setEquationFlow(this::DANAPengRobinson)
     if !isnan(this.q) && !isnan(this.r) && (this.q^3-this.r^2)<0
-      this.equationsFlow=this.equations[5:21];
+      this.equationsFlow=this.equations[5:20];
     else
-      this.equationsFlow=this.equations[1:19];
+      this.equationsFlow=this.equations[1:18];
     end
+		if this.af>0.49
+			this.equationsFlow=[this.equationsFlow,this.equations[22]]
+		else
+			this.equationsFlow=[this.equationsFlow,this.equations[21]]		
+		end
+
     if isnan(this.Z) && !isnan(this.Z1) && !isnan(this.Z2) && !isnan(this.Z3)
       this.Z=max(this.Z1,this.Z2,this.Z3)
     end
