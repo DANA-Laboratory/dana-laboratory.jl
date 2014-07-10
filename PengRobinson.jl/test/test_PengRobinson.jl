@@ -78,18 +78,21 @@ module test_PengRobinson
 						while (i<=numberOfEquations && !somthingUpdated)
 							eqIndexes=getAllEquationS(1,numberOfEquations,i)
 							for eqIndex in eqIndexes
-								if length(union(getindex(nonliVars,eqIndex)...)) == i
+								varGroup=getindex(nonliVars,eqIndex)
+								allVars=union(varGroup...)
+								if length(allVars) == i
 									eqGroup=getindex(nonliFuns,eqIndex)
-									println("eqGroup=",eqIndex," for vars:",getindex(nonliVars,eqIndex))
+									println("eqGroup=",eqIndex," for vars:",allVars)
+									indxGroup=map(x->indexin([x...],[allVars...]),varGroup)
 									opt = Opt(:GN_DIRECT_L, i)
-									lower_bounds!(opt, [1.0e-3, 300])
+									lower_bounds!(opt, [1.0e-3, 1.0])
 									upper_bounds!(opt, [10.0,2500])
 									stopval!(opt, 1.0e-12)
 									maxtime!(opt, 1.0*i)
 									#ftol_abs!(opt, 1.0e-19)
 									#ftol_rel!(opt, 1.0e-18)
-									min_objective!(opt, (y,gradient)->sum(map(x->(apply(x,y))^2,eqGroup)))
-									(minf,minx,ret)=optimize(opt,[0.5,400.0])
+									min_objective!(opt, (y,gradient)->mapreduce(x->(apply(eqGroup[x],getindex(y,indxGroup[x])))^2,+,[1:i]))
+									(minf,minx,ret)=optimize(opt,ones(Float64,i))
 									println("got $minf at $minx (returned $ret)")
 									if "$ret"=="STOPVAL_REACHED"
 										for j in [1:i]
