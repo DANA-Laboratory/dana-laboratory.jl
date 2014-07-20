@@ -30,10 +30,10 @@ module HelperEquation
 		return eval(ex)
 	end
 
-  getfield(danamodel::DanaModel,sy::Symbol)=Core.getfield(danamodel,sy)
+  getfield(danamodel::DanaModel,sy::Symbol)=get(Base.getfield(danamodel,sy))
   getfield(danamodel::DanaModel,ex::Expr)=getfield(getfield(danamodel,ex.args[1]),ex.args[2].value)
 
-  setfield(danamodel::DanaModel,sy::Symbol,value)=Base.setfield!(danamodel,sy,value)
+  setfield(danamodel::DanaModel,sy::Symbol,value)=set(danamodel.(sy),value)
   setfield(danamodel::DanaModel,ex::Expr,value)=setfield(getfield(danamodel,ex.args[1]),ex.args[2].value,value)
   setfield(danamodel::DanaModel,st::String,value)=setfield(danamodel,symbol(st),value)
   
@@ -50,8 +50,8 @@ module HelperEquation
   end  
   
   function replace(danamodel::DanaModel,sym::Symbol)
-    var::Float64 = getfield(danamodel,sym)
-    return (isnan(var) ? sym : var)
+    var = getfield(danamodel,sym)
+    return (var==nothing ? sym : var)
   end
   #replace symbols with their values & := with :-
   function replace(danamodel::DanaModel,exp::Expr)
@@ -64,8 +64,8 @@ module HelperEquation
     elseif exp.head == :(=)
       return Expr(:call,:-,replace(danamodel,exp.args[1]),replace(danamodel,exp.args[2]))
     elseif exp.head == :.
-      var::Float64 = getfield(danamodel,exp)
-      return (isnan(var) ? exp : var)
+      var = getfield(danamodel,exp)
+      return (var==nothing ? exp : var)
     end
     return exp
   end

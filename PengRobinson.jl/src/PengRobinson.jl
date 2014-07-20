@@ -1,21 +1,51 @@
 # REF[1] Engineering and Chemical Thermodynamics, 2nd Edition, Milo D. Koretsky
 # REF[2] http://en.wikipedia.org/wiki/Departure_function
+# REF[3] http://en.wikipedia.org/wiki/Equation_of_state#Peng.E2.80.93Robinson_equation_of_state
 module PengRobinson
+	require("DanaModels.jl/JuliaEMSOModels/types.jl")
   # Units J,Kmol,Kelvin,pascal
-  using DanaTypes
+	using DanaTypes
+  using EMLtypes
   export DANAPengRobinson,setEquationFlow
   type  DANAPengRobinson <: DanaModel
       DANAPengRobinson()=begin
-        new(8314.4621,pi,"",NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,
+        new(
+					constant((Symbol=>Any)[:Brief=>"general gas constatnt",:Default=>8314.4621,:Unit=>"J/Kmol/Kelvin"]),
+					"",
+					volume_mol(),
+					temperature(),
+					temperature((Symbol=>Any)[:Brief=>"critical temperature"]),
+					pressure(),
+					pressure((Symbol=>Any)[:Brief=>"critical pressure"]),
+					constant(),
+					coefficient(),
+					coefficient(),
+					coefficient(),
+					coefficient(),
+					coefficient(),
+					coefficient(),
+					coefficient(),
+					coefficient(),
+					coefficient(),
+					constant((Symbol=>Any)[:Brief=>"acentric factor"]),
+					coefficient((Symbol=>Any)[:Brief=>"compressibility factor",:Lower=>eps(Float64),:Upper=>50.0]),
+					coefficient((Symbol=>Any)[:Brief=>"compressibility factor",:Lower=>eps(Float64),:Upper=>50.0]),
+					coefficient((Symbol=>Any)[:Brief=>"compressibility factor",:Lower=>eps(Float64),:Upper=>50.0]),
+					coefficient((Symbol=>Any)[:Brief=>"compressibility factor",:Lower=>eps(Float64),:Upper=>50.0]),
+					coefficient(),
+					enth_mol(),
+					entr_mol(),
+					enth_mol(),
+					coefficient(),
           [
 						:(teta=acos(r/q^1.5)),
 						:(Z1=-2*sqrt(q)*cos(teta/3)-beta/3),
 						:(Z2=-2*sqrt(q)*cos((teta+2*pi)/3)-beta/3),
 						:(Z3=-2*sqrt(q)*cos((teta+4*pi)/3)-beta/3),
-						:(P=R*T/(v-b)-(d*(1+k*(1-sqrt(T/Tc)))^2)/(v*v+2*b*v-b*b)),
+						:(P=R*T/(v-b)-(a*(1+k*(1-sqrt(T/Tc)))^2)/(v*v+2*b*v-b*b)),
             :(Z=P*v/R/T),
-						:(A=(d*(1+k*(1-sqrt(T/Tc)))^2)*P/R^2/T^2),
-						:(b=0.0778*R*Tc/Pc),
+						:(A=(a*(1+k*(1-sqrt(T/Tc)))^2)*P/R^2/T^2),
+						:(b=0.077796*R*Tc/Pc), #REF[3]
 						:(B=b*P/R/T),
 						:(beta=B-1),
 						:(gama=A-3*B^2-2*B),
@@ -24,8 +54,8 @@ module PengRobinson
 						:(r=(2*beta^3-9*beta*gama+27*delta)/54),
             :(h_Dep=R*Tc*((T/Tc)*(Z-1)-2.078*(1+k)*sqrt((1+k*(1-sqrt(T/Tc)))^2)*log((Z+2.414*B)/(Z-0.414*B)))), #REF[2]
             :(s_Dep=R*(log(Z-B)-2.078*k*((1+k)/sqrt(T/Tc)-k)*log((Z+2.414*B)/(Z-0.414*B)))), #REF[2]
-						:(h_Dep2=((-4*(b^3*R*T*Tc-2*b^2*R*T*Tc*v+d*(Tc-2*k*(-1+sqrt(T/Tc))*Tc+k^2*(T+Tc-2*sqrt(T/Tc)*Tc))*v^2-b*v*(d*(Tc-2*k*(-1+sqrt(T/Tc))*Tc+k^2*(T+Tc-2*sqrt(T/Tc)*Tc))+R*T*Tc*v)))/(Tc*(b-v)*(b^2-2*b*v-v^2))-(sqrt(2)*d*(1+k)*(-1+k*(-1+sqrt(T/Tc)))*log(-1+(b+v)/(sqrt(2)*b)))/b+(sqrt(2)*d*(1+k)*(-1+k*(-1+sqrt(T/Tc)))*log(1+(b+v)/(sqrt(2)*b)))/b)/4),
-            :(d=0.45724*R^2*Tc^2/Pc),
+						:(h_Dep2=((-4*(b^3*R*T*Tc-2*b^2*R*T*Tc*v+a*(Tc-2*k*(-1+sqrt(T/Tc))*Tc+k^2*(T+Tc-2*sqrt(T/Tc)*Tc))*v^2-b*v*(a*(Tc-2*k*(-1+sqrt(T/Tc))*Tc+k^2*(T+Tc-2*sqrt(T/Tc)*Tc))+R*T*Tc*v)))/(Tc*(b-v)*(b^2-2*b*v-v^2))-(sqrt(2)*a*(1+k)*(-1+k*(-1+sqrt(T/Tc)))*log(-1+(b+v)/(sqrt(2)*b)))/b+(sqrt(2)*a*(1+k)*(-1+k*(-1+sqrt(T/Tc)))*log(1+(b+v)/(sqrt(2)*b)))/b)/4),
+            :(a=0.457235*R^2*Tc^2/Pc), #REF[3]
 						:(o=cbrt((r^2-q^3)^0.5+abs(r))),
             :(Z=-sign(r)*(o+q/o)-beta/3),
 						:(k=0.37464+1.54226*af-0.26992*af^2),
@@ -41,54 +71,53 @@ module PengRobinson
         )
       end
       #paremeters
-      R::Float64
-      pi::Float64
+      R::constant
       CASNO::String
       #variables
-      v::Float64
-      T::Float64
-      Tc::Float64
-      P::Float64
-      Pc::Float64
-			k::Float64
-			A::Float64
-			b::Float64
-			B::Float64
-			beta::Float64
-			gama::Float64
-			delta::Float64
-			q::Float64
-			r::Float64
-			teta::Float64
-			af::Float64
-			Z1::Float64
-			Z2::Float64
-			Z3::Float64
-			Z::Float64
-      o::Float64
-      h_Dep::Float64
-      s_Dep::Float64
-      h_Dep2::Float64
-      d::Float64
+      v::volume_mol
+      T::temperature
+      Tc::temperature
+      P::pressure
+      Pc::pressure
+			k::constant
+			A::coefficient
+			b::coefficient
+			B::coefficient
+			beta::coefficient
+			gama::coefficient
+			delta::coefficient
+			q::coefficient
+			r::coefficient
+			teta::coefficient
+			af::constant
+			Z1::coefficient
+			Z2::coefficient
+			Z3::coefficient
+			Z::coefficient
+      o::coefficient
+      h_Dep::enth_mol
+      s_Dep::entr_mol
+      h_Dep2::enth_mol
+      a::coefficient
 			#h_Dep_aletr::Float64
       #equations
       equations::Array{Expr,1}
       equationsFlow::Array{Expr,1}
   end
   function setEquationFlow(this::DANAPengRobinson)
-    if !isnan(this.q) && !isnan(this.r) && (this.q^3-this.r^2)<0
+    if !this.q.unset && this.r.unset && (get(this.q)^3-get(this.r)^2)<0
       this.equationsFlow=this.equations[5:20];
     else
       this.equationsFlow=this.equations[1:18];
     end
-		if this.af>0.49
+		if get(this.af)>0.49
 			this.equationsFlow=[this.equationsFlow,this.equations[22]]
 		else
 			this.equationsFlow=[this.equationsFlow,this.equations[21]]		
 		end
 
-    if isnan(this.Z) && !isnan(this.Z1) && !isnan(this.Z2) && !isnan(this.Z3)
-      this.Z=max(this.Z1,this.Z2,this.Z3)
+    if this.Z.unset && !(this.Z1.unset) && !(this.Z2.unset) && !(this.Z3.unset)
+      set(this.Z,max(get(this.Z1),get(this.Z2),get(this.Z3)))
     end
   end
 end

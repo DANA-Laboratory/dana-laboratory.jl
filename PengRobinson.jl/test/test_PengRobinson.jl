@@ -244,13 +244,13 @@ module test_PengRobinson
     ii=1
 		for T in [328.84,350,400,450,500,550]
 			DNpr=DANAPengRobinson()
-			DNpr.T=T
-			DNpr.P=0.1e6
+			set(DNpr.T,T)
+			set(DNpr.P,0.1e6)
 			# acetone
 			tc,pc,af=getValueForCasNo("Criticals","67-64-1");
-			DNpr.Tc=tc
-			DNpr.Pc=pc
-			DNpr.af=af
+			set(DNpr.Tc,tc)
+			set(DNpr.Pc,pc)
+			set(DNpr.af,af)
 			somthingUpdated=true
 			fullDetermined=false
 			nonliFuns::Array{Function,1}=Array(Function,0)
