@@ -10,6 +10,7 @@ module PengRobinson
   type  DANAPengRobinson <: DanaModel
       DANAPengRobinson()=begin
         new(
+					constant((Symbol=>Any)[:Default=>pi]),
 					constant((Symbol=>Any)[:Brief=>"general gas constatnt",:Default=>8314.4621,:Unit=>"J/Kmol/Kelvin"]),
 					"",
 					volume_mol(),
@@ -36,7 +37,7 @@ module PengRobinson
 					enth_mol(),
 					entr_mol(),
 					enth_mol(),
-					coefficient(),
+					coefficient((Symbol=>Any)[:Default=>0.457235*R^2*AVR_Tc^2/AVR_Pc,:Lower=>0.457235*R^2*MIN_Tc^2/MAX_Pc,:Upper=>0.457235*R^2*MAX_Tc^2/MIN_Pc]),
           [
 						:(teta=acos(r/q^1.5)),
 						:(Z1=-2*sqrt(q)*cos(teta/3)-beta/3),
@@ -71,6 +72,7 @@ module PengRobinson
         )
       end
       #paremeters
+			pi::constant
       R::constant
       CASNO::String
       #variables
@@ -105,7 +107,7 @@ module PengRobinson
       equationsFlow::Array{Expr,1}
   end
   function setEquationFlow(this::DANAPengRobinson)
-    if !this.q.unset && this.r.unset && (get(this.q)^3-get(this.r)^2)<0
+    if !(this.q.unset) && !(this.r.unset) && (get(this.q)^3-get(this.r)^2)<0
       this.equationsFlow=this.equations[5:20];
     else
       this.equationsFlow=this.equations[1:18];

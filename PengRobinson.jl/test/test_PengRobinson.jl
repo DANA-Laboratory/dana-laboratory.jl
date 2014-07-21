@@ -15,6 +15,7 @@ module test_PengRobinson
   using Tables
   using Roots
 	using NLopt
+	using DanaTypes
   reload ("IdealGasEos.jl/test/test_IdealGasEos.jl")
   using test_IdealGasEos
 	
@@ -244,6 +245,8 @@ module test_PengRobinson
     ii=1
 		for T in [328.84,350,400,450,500,550]
 			DNpr=DANAPengRobinson()
+			set(DNpr.pi)
+			set(DNpr.R)
 			set(DNpr.T,T)
 			set(DNpr.P,0.1e6)
 			# acetone
@@ -254,12 +257,14 @@ module test_PengRobinson
 			somthingUpdated=true
 			fullDetermined=false
 			nonliFuns::Array{Function,1}=Array(Function,0)
-			nonliVars::Array{Array{String,1},1}=Array(Array{String,1},0)
+			nonliVars::Array{Set{String},1}=Array(Set{String},0)
 			while (somthingUpdated && !fullDetermined)
 				while (somthingUpdated && !fullDetermined)
           setEquationFlow(DNpr);
 					rVls,vars,nonliFuns,nonliVars=solve(DNpr)
-					somthingUpdated,fullDetermined=update!(DNpr,rVls,vars)
+					println(DNpr.equationsFlow)
+					somthingUpdated,fullDetermined=update!(DNpr,rVls,vars)					
+					return DNpr
 				end
 				if !fullDetermined
 					i=1
@@ -278,16 +283,16 @@ module test_PengRobinson
 			end
       #println("T=",DNpr.T," v=",DNpr.v," ref_val=",ref_valuse[ii]) #Table[2.185]
       #println(" Dh=",DNpr.h_Dep," Ds=",DNpr.s_Dep) #Table[2.185]
-      push!(h_Dep,DNpr.h_Dep)
-      push!(v_Calc,DNpr.v)
+      push!(h_Dep,get(DNpr.h_Dep))
+      push!(v_Calc,get(DNpr.v))
       ii=ii+1
     end
     # ideal gas
     #println(h_Dep)
-    ideal_h=test_IdealGasEos.forAcetone()
-    res1=(ideal_h/1000.0+h_Dep/1000.0)
-    println("ideal gas dh (calculated)-> ",round((ideal_h-ideal_h[1])/1000.0)[2:end]," (j/mol)")
-    println("real gas dh (claculated)->  ",round(res1-res1[1])[2:end]," (j/mol)")
-    println("reference values->          ",round(ref_h-ref_h[1])[2:end]," (j/mol)")
+    #ideal_h=test_IdealGasEos.forAcetone()
+    #res1=(ideal_h/1000.0+h_Dep/1000.0)
+    #println("ideal gas dh (calculated)-> ",round((ideal_h-ideal_h[1])/1000.0)[2:end]," (j/mol)")
+    #println("real gas dh (claculated)->  ",round(res1-res1[1])[2:end]," (j/mol)")
+    #println("reference values->          ",round(ref_h-ref_h[1])[2:end]," (j/mol)")
 	end
 end

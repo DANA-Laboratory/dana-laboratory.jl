@@ -69,10 +69,13 @@ module DanaTypes
   end
   #get Dana value
   function get(x::Dana)
-    return x.unset ? (nothing,"value is unset, use immute.default") : x.value
+    return x.unset ? nothing : x.value #"value is unset, use immute.default"
   end
   function unset(x::Dana)
     x.unset=true
+  end
+  function set(x::Dana)
+    x.unset=false
   end
   #################################################################
   # Boolean datatype declaration 
@@ -114,10 +117,10 @@ module DanaTypes
       d=haskey(_,:finalDefault) ?  _[:finalDefault] : _[:Default]
       e::Set=haskey(_,:finalValid) ?  Set(_[:finalValid]...) : (haskey(_,:Valid) ? Set(_[:Valid]...) : Set())
       if !isa(e,Set)
-        return nothing,"in Switcher: invalid values, must be a set"
+        return nothing #"in Switcher: invalid values, must be a set"
       end
       if !in(d,e)
-        return nothing,"in Switcher: invalid default value"
+        return nothing #"in Switcher: invalid default value"
       end
       new(b,d,e)
     end
@@ -164,7 +167,7 @@ module DanaTypes
   typealias DanaSwitcherParametric{R} Dana{_Switcher,Any,R}
   typealias DanaSwitcher Dana{_Switcher,Any,AbsBulitIns}
   #check Switcher value
-  function isequal(x::DanaSwitcher,y::Any)
+  function isequal(x::DanaSwitcherParametric,y::Any)
     return x.unset ? (nothing,"value is unset, use immute.default") : x.value==y
   end
   # set Switcher value
@@ -180,7 +183,7 @@ module DanaTypes
   typealias DanaRealParametric{R} Dana{_Real,Float64,R}
   typealias DanaReal Dana{_Real,Float64,AbsBulitIns}
   # set Integer,Real value
-  function set(x::DanaReal,y::Float64)
+  function set(x::DanaRealParametric,y::Float64)
     if y>=x.immute.lower && y<=x.immute.upper
       x.value=y
       x.unset=false
@@ -189,7 +192,7 @@ module DanaTypes
       return nothing,"value must between " * string(x.immute.lower) * " and " * string(x.immute.upper)
     end
   end
-  function set(x::DanaInteger,y::Int)
+  function set(x::DanaIntegerParametric,y::Int)
     if y>=x.immute.lower && y<=x.immute.upper
       x.value=y
       x.unset=false
