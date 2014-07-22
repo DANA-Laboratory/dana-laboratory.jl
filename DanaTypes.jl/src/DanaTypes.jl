@@ -173,7 +173,7 @@ module DanaTypes
   # set Switcher value
   function set(x::DanaSwitcher,y::Any)
     if !in(y,x.immute.valid)
-      return nothing,"in set: invalid value " * string(y)
+      return nothing # "in set: invalid value " * string(y)
     else
       x.value=y
       x.unset=false
@@ -183,23 +183,19 @@ module DanaTypes
   typealias DanaRealParametric{R} Dana{_Real,Float64,R}
   typealias DanaReal Dana{_Real,Float64,AbsBulitIns}
   # set Integer,Real value
+	function validate(x::DanaRealParametric)
+		return (y>=x.immute.lower && y<=x.immute.upper)
+	end
   function set(x::DanaRealParametric,y::Float64)
-    if y>=x.immute.lower && y<=x.immute.upper
-      x.value=y
-      x.unset=false
-      return y
-    else
-      return nothing,"value must between " * string(x.immute.lower) * " and " * string(x.immute.upper)
-    end
+		x.value=y
+		x.unset=false
   end
+	function validate(x::DanaIntegerParametric)
+		return (y>=x.immute.lower && y<=x.immute.upper)
+	end
   function set(x::DanaIntegerParametric,y::Int)
-    if y>=x.immute.lower && y<=x.immute.upper
-      x.value=y
-      x.unset=false
-      return y
-    else
-      return nothing,"value must between " * string(x.immute.lower) * " and " * string(x.immute.upper)
-    end
+		x.value=y
+		x.unset=false
   end
   #################################################################
   # driving childs from Dana datatypes
