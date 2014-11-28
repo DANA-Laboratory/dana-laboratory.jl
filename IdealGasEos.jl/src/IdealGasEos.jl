@@ -1,4 +1,5 @@
 # REF[1] Engineering and Chemical Thermodynamics, 2nd Edition, Milo D. Koretsky
+# REF[2] Perry 8ed.
 module IdealGasEos
   #Units J,Kmol,Kelvin,pascal
   using DanaTypes
@@ -8,8 +9,8 @@ module IdealGasEos
         new(8314.4621,"",true,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,
           [
             :(P*v=R*T),#pascal
-            :(Cp=C1+C2*T+C3*T^2+C4*T^3+C5*T^4),#Poly Cp in J/[Kmol*K]
-            :(Cp=C1+C2*((C3/T)/sinh(C3/T))^2+C4*((C5/T)/cosh(C5/T))^2),#Hyper Cp in J/[Kmol*K]
+            :(Cp=C1+C2*T+C3*T^2+C4*T^3+C5*T^4),#Poly Cp in J/[Kmol*K] REF[2] TABLE 2-155
+            :(Cp=C1+C2*((C3/T)/sinh(C3/T))^2+C4*((C5/T)/cosh(C5/T))^2),#Hyper Cp in J/[Kmol*K] REF[2] TABLE 2-156
             :(ICpOnTDT=C2*T+(C3*T^2)/2+(C4*T^3)/3+(C5*T^4)/4+C1*log(T)),#Integral of Cp/T Poly
             :(ICpOnTDT=(C2*C3*coth(C3/T)+C1*T*log(T)+C4*T*log(cosh(C5/T))-C2*T*log(sinh(C3/T))-C4*C5*tanh(C5/T))/T),#Integral of Cp/T Hyper
             :(Cv=Cp-R),#Cv Def

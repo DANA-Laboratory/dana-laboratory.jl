@@ -18,17 +18,18 @@ module test_PengRobinson
 	using DanaTypes
   reload ("IdealGasEos.jl/test/test_IdealGasEos.jl")
   using test_IdealGasEos
-	
-	function getAllEquationS(from::Int,to::Int,numberOfEquations::Int)
-		if 1<numberOfEquations
+	#generate indexes for all possible system of _noe equations[APSOE]. 
+  #where equations is a selection from _minIndex to _maxIndex of a list of equations
+	function getAPSOE(_minIndex::Int,_maxIndex::Int,_noe::Int)
+		if 1<_noe
 			jj::Vector=Vector[]
-			for k in [from+1:to]
-				j=getAllEquationS(k,to,numberOfEquations-1)
+			for k in [_minIndex+1:_maxIndex] 
+				j=getAPSOE(k,_maxIndex,_noe-1)
 				jj=append!(jj,[push!(e,k-1) for e in j])
 			end
 			return jj
 		else
-			return [[i] for i in from:to]
+			return [[i] for i in _minIndex:_maxIndex]
 		end
 	end
 	#*********************
@@ -77,7 +78,7 @@ module test_PengRobinson
 					if (!somthingUpdated)
 						i=2
 						while (i<=numberOfEquations && !somthingUpdated)
-							eqIndexes=getAllEquationS(1,numberOfEquations,i)
+							eqIndexes=getAPSOE(1,numberOfEquations,i)
 							for eqIndex in eqIndexes
 								varGroup=getindex(nonliVars,eqIndex)
 								allVars=union(varGroup...)
